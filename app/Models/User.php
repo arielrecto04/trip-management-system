@@ -19,7 +19,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'role',
         'email',
+        'phone_number',
         'password',
     ];
 
@@ -45,4 +47,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function attachable()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
 }
