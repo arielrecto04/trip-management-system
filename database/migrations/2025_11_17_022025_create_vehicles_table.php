@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Trip::class, 'current_trip_id')->nullalbe();
+            $table->foreignIdFor(Trip::class, 'current_trip_id')->nullable();
             $table->string('vin')->unique();
             $table->string('brand');
             $table->string('model');
