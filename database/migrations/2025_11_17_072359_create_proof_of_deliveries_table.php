@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TripStop;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('proof_of_deliveries', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor('trip_stop');
+            $table->foreignIdFor(TripStop::class);
             $table->string('recipient_name')->nullable();
             $table->decimal('collected_cod_amount', 10, 2)->default(0);
             // When the POD was completed (signature done, photos taken)
