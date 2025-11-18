@@ -8,6 +8,7 @@ class Role extends Model
 {
     protected $fillable = [
         'name',
+        'slug',
     ];
 
     public function users()
@@ -17,6 +18,6 @@ class Role extends Model
 
     public function userRoles()
     {
-        return $this->hasMany(UserRole::class);
+        return $this->hasMany(RoleUser::class);
     }
 }
