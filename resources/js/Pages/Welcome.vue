@@ -74,7 +74,7 @@ function openContact() {
 
     <div class="min-h-screen bg-gray-50 dark:bg-zinc-900 text-gray-800 dark:text-white">
         <!-- NAV -->
-        <header class="bg-white dark:bg-zinc-800 border-b dark:border-zinc-700">
+        <header class="dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light">
             <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <div
@@ -115,7 +115,7 @@ function openContact() {
 
                         <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
                             <div v-for="s in stats" :key="s.label"
-                                class="bg-white dark:bg-zinc-800 p-4 rounded shadow-sm">
+                                class="dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light p-4 rounded shadow-sm">
                                 <div class="text-sm text-gray-500">{{ s.label }}</div>
                                 <div class="mt-1 text-xl font-semibold">{{ s.value }}</div>
                             </div>
@@ -123,7 +123,7 @@ function openContact() {
                     </div>
 
                     <div>
-                        <div class="rounded-lg bg-white dark:bg-zinc-800 p-6 shadow flex flex-col gap-4">
+                        <div class="rounded-lg dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light p-6 shadow flex flex-col gap-4">
                             <div class="text-sm text-gray-500">Quick Track (demo)</div>
                             <input v-model="query" placeholder="Enter tracking number, origin or destination"
                                 class="px-3 py-2 border rounded-md bg-white dark:bg-zinc-900 focus:outline-none" />
@@ -163,7 +163,7 @@ function openContact() {
 
             <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <div v-for="svc in services" :key="svc.title"
-                    class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm">
+                    class="dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light p-6 rounded-lg shadow-sm">
                     <div class="text-lg font-semibold">{{ svc.title }}</div>
                     <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">{{ svc.desc }}</p>
                 </div>
@@ -171,7 +171,7 @@ function openContact() {
         </section>
 
         <!-- Fleet -->
-        <section id="fleet" class="bg-white dark:bg-zinc-900 border-t dark:border-zinc-800">
+        <section id="fleet" class="dark:bg-bgcolor-dark bg-bgcolor-light border-t dark:border-zinc-800">
             <div class="max-w-7xl mx-auto px-6 py-14">
                 <div class="flex items-center justify-between">
                     <div>
@@ -184,7 +184,7 @@ function openContact() {
 
                 <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <div v-for="f in fleet" :key="f.name"
-                        class="rounded-lg p-4 bg-gray-50 dark:bg-zinc-800 border dark:border-zinc-700">
+                        class="rounded-lg p-4 dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light border dark:border-zinc-700">
                         <div class="font-medium">{{ f.name }}</div>
                         <div class="text-sm text-gray-500 mt-1">Status: <span class="font-semibold">{{ f.status
                                 }}</span></div>
@@ -201,7 +201,7 @@ function openContact() {
             </div>
 
             <div class="mt-6 grid gap-6 sm:grid-cols-2">
-                <div v-for="t in testimonials" :key="t.name" class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm">
+                <div v-for="t in testimonials" :key="t.name" class="dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light p-6 rounded-lg shadow-sm">
                     <div class="text-sm text-gray-600 dark:text-gray-300">“{{ t.quote }}”</div>
                     <div class="mt-4 text-sm font-medium">{{ t.name }} · <span class="text-gray-500">{{ t.company
                             }}</span></div>
@@ -228,7 +228,7 @@ function openContact() {
                     </div>
 
                     <div>
-                        <form class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm space-y-3"
+                        <form class="dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light p-6 rounded-lg shadow-sm space-y-3"
                             onsubmit="event.preventDefault()">
                             <div>
                                 <label class="text-sm">Full name</label>
@@ -259,7 +259,7 @@ function openContact() {
         </section>
 
         <!-- FOOTER -->
-        <footer class="border-t dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <footer class="border-t dark:border-zinc-800 dark:bg-bgcontentcolor-dark bg-bgcontentcolor-light">
             <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="text-sm text-gray-600 dark:text-gray-300">© {{ new Date().getFullYear() }} {{ company.name
                     }}. All rights reserved.</div>
