@@ -1,8 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { Inertia } from '@inertiajs/inertia';
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { usePage } from '@inertiajs/vue3';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -18,9 +17,6 @@ const { props } = usePage();
 const users = ref(props.users);
 const roles = ref(props.roles);
 
-watch(() => props.newUser, (newUser) => {
-    if (newUser) users.value.push(newUser);
-});
 
 const visible = ref(false);
 
@@ -48,14 +44,29 @@ const createForm = useForm({
 const deleteForm = useForm({});
 
 
-const submitCreateForm = () => {
-    createForm.post('/users', {
-        onSuccess: () => {
-            createForm.reset();
-            visible.value = false;
-        }
-    });
-};
+const submitCreateForm = () => { 
+    createForm.post('/users', { 
+        onSuccess: (page) => { 
+            users.value.push(page.props.newUser), 
+            createForm.reset(), 
+            visible.value = false 
+        }, 
+        onError: () => { 
+            if(createForm.errors.name) { 
+                createForm.reset('name'); 
+            } 
+            if(createForm.errors.email) { 
+                createForm.reset('email'); 
+            } 
+            if(createForm.errors.password) { 
+                createForm.reset('password', 'password_confirmation'); 
+            } 
+            if(createForm.errors.phone_number) { 
+                createForm.reset('phone_number'); 
+            } 
+        } 
+    }) 
+}
 
 const deleteUser = (id) => {
     if (!confirm('Are you sure you want to delete this user?')) return;

@@ -42,8 +42,11 @@ class UserController extends Controller
         ]);
 
         $user = $this->userService->createUser($userData);
+        $user->load('roles');
 
-        return redirect()->route('users')->with('newUser', $user);
+        return Inertia::render('User/Index', [
+            'newUser' => $user
+        ]);
     }
 
     public function destroy($id)
