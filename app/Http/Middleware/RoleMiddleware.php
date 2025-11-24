@@ -20,7 +20,7 @@ class RoleMiddleware
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('home');
+            return redirect()->route('login');
         }
 
         // Ensure the user model exposes a roles relationship before calling it
