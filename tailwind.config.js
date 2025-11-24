@@ -22,11 +22,17 @@ export default {
                 },
                 navcolor: {
                     light: '#f9fafb', // Tailwind's gray-50
-                    dark: '#27272a',  // Tailwind's gray-800
+                    dark: '#1F2937',  // Tailwind's gray-800
                 },
                 bgcontentcolor: {
                     light: '#f9fafb', // Tailwind's gray-50
-                    dark: '#27272a',  // Tailwind's gray-800
+                    dark: '#1F2937',  // Tailwind's gray-800
+                },
+                textcolor: {
+                    light: '#18181b',  // for light backgrounds
+                    dark: '#f9fafb',   // for dark backgrounds
+                    loginlight: '#f9fafb',
+                    logindark: '#18181b',
                 }
             }
         },
