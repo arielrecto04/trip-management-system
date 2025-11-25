@@ -27,7 +27,11 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('User/Create');
+        $allRoles = $this->roleServices->showAllRoles();
+
+        return Inertia::render('User/Create', [
+            'roles' => $allRoles
+        ]);
     }
 
     public function store(Request $request)
@@ -44,8 +48,34 @@ class UserController extends Controller
         $user = $this->userService->createUser($userData);
         $user->load('roles');
 
-        return Inertia::render('User/Index', [
-            'newUser' => $user
+        return redirect()->route('users');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $userData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone_number' => 'required|string',
+            'password' => 'nullable|confirmed',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id',
+        ]);
+
+        $user = $this->userService->editUser($id, $userData);
+        $user->load('roles');
+
+        return redirect()->route('users');
+    }
+
+    public function edit($id)
+    {
+        $user = $this->userService->findUserById($id)->load('roles');
+        $roles = $this->roleServices->showAllRoles();
+
+        return Inertia::render('User/Edit', [
+            'user' => $user,
+            'roles' => $roles,
         ]);
     }
 

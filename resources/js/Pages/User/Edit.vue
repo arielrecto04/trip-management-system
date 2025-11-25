@@ -1,26 +1,20 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePage } from '@inertiajs/vue3';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import InputLabel from '@/Components/InputLabel.vue';
 import Checkbox from 'primevue/checkbox';
-import CheckboxGroup from 'primevue/checkboxgroup';
 import InputError from '@/Components/InputError.vue';
 
 const { props } = usePage();
-const users = ref(props.users);
+const user = ref(props.user);
 const roles = ref(props.roles);
 
-
-const createVisible = ref(false);
-
-const createForm = useForm({
+const editForm = useForm({
+    id: '',
     name: '',
     email: '',
     phone_number: '',
@@ -29,33 +23,35 @@ const createForm = useForm({
     password_confirmation: '',
 });
 
-const submitCreateForm = () => { 
-    createForm.post('/users', { 
-        onSuccess: (page) => { 
-            users.value.push(page.props.newUser), 
-            createForm.reset(), 
-            createVisible.value = false,
-            console.log('create user success');
-        }, 
-        onError: () => { 
-            if(createForm.errors.name) { 
-                createForm.reset('name'); 
-            } 
-            if(createForm.errors.email) { 
-                createForm.reset('email'); 
-            } 
-            if(createForm.errors.password) { 
-                createForm.reset('password', 'password_confirmation'); 
-            } 
-            if(createForm.errors.phone_number) { 
-                createForm.reset('phone_number'); 
-            } 
+onMounted(() => {
+    if(user.value) {
+        editForm.id = user.value.id;
+        editForm.name = user.value.name;
+        editForm.email = user.value.email;
+        editForm.phone_number = user.value.phone_number;
+        editForm.roles = user.value.roles.map(r => r.id);
+    }
+})
 
-            console.log('Failed to create user');
-        } 
-    }) 
+console.log('user', user.value);
+
+const submitEditForm = () => {
+    editForm.put(`/users/${editForm.id}`, {
+        preserveScroll: true,
+        onSuccess: (page) => {
+            if(page.props.user) {
+                editForm.name = page.props.user.name;
+                editForm.email = page.props.user.email;
+                editForm.phone_number = page.props.user.phone_number;
+                editForm.roles = page.props.user.roles.map(r => r.id);
+            }
+            console.log('update user success');
+        },
+        onError: () => {
+            console.log('Failed to update user');
+        }
+    })
 }
-
 
 </script>
 
@@ -85,49 +81,49 @@ const submitCreateForm = () => {
                     <div class="mb-4">
                         <div class="flex items-center gap-4">
                             <InputLabel for="name" value="Name" class="w-1/3" />
-                            <InputText v-model="createForm.name" required class="w-2/3" />
+                            <InputText v-model="editForm.name" required class="w-2/3" />
                         </div>
-                        <InputError :message="createForm.errors.name" class="mt-1" />
+                        <InputError :message="editForm.errors.name" class="mt-1" />
                     </div>
 
                     <!-- Email -->
                     <div class="mb-4">
                         <div class="flex items-center gap-4">
                             <InputLabel for="email" value="Email" class="w-1/3" />
-                            <InputText v-model="createForm.email" class="w-2/3" />
+                            <InputText v-model="editForm.email" class="w-2/3" />
                         </div>
-                        <InputError :message="createForm.errors.email" class="mt-1" />
+                        <InputError :message="editForm.errors.email" class="mt-1" />
                     </div>
 
                     <!-- Phone -->
                     <div class="mb-4">
                         <div class="flex items-center gap-4">
                             <InputLabel for="phone_number" value="Phone Number" class="w-1/3" />
-                            <InputText v-model="createForm.phone_number" class="w-2/3" />
+                            <InputText v-model="editForm.phone_number" class="w-2/3" />
                         </div>
-                        <InputError :message="createForm.errors.phone_number" class="mt-1" />
+                        <InputError :message="editForm.errors.phone_number" class="mt-1" />
                     </div>
 
                     <!-- Password -->
                     <div class="mb-4">
                         <div class="flex items-center gap-4">
                             <InputLabel for="password" value="Password" class="w-1/3" />
-                            <InputText v-model="createForm.password" type="password" class="w-2/3" />
+                            <InputText v-model="editForm.password" type="password" class="w-2/3" />
                         </div>
-                        <InputError :message="createForm.errors.password" class="mt-1" />
+                        <InputError :message="editForm.errors.password" class="mt-1" />
                     </div>
 
                     <!-- Password Confirmation -->
                     <div class="mb-4">
                         <div class="flex items-center gap-4">
                             <InputLabel for="password_confirmation" value="Password Confirmation" class="w-1/3" />
-                            <InputText v-model="createForm.password_confirmation" type="password" class="w-2/3" />
+                            <InputText v-model="editForm.password_confirmation" type="password" class="w-2/3" />
                         </div>
-                        <InputError :message="createForm.errors.password_confirmation" class="mt-1" />
+                        <InputError :message="editForm.errors.password_confirmation" class="mt-1" />
                     </div>
 
                     <!-- Roles -->
-                    <InputLabel for="selectedRoles" value="Roles" class="mb-2" />
+                    <InputLabel value="Roles" class="mb-2" />
 
                     <div class="grid grid-cols-2 gap-2 mb-2">
                         <div 
@@ -136,19 +132,19 @@ const submitCreateForm = () => {
                             class="flex items-center gap-2"
                         >
                             <Checkbox 
-                                v-model="createForm.roles"
+                                v-model="editForm.roles"
                                 :inputId="role.id.toString()"
                                 :value="role.id"
                             />
                             <InputLabel :for="role.id.toString()" :value="role.name" />
                         </div>
                     </div>
-                    <InputError :message="createForm.errors.roles" class="mt-1" />
+                    <InputError :message="editForm.errors.roles" class="mt-1" />
 
 
                     <!-- Buttons -->
                     <div class="flex justify-end gap-2 mt-8">
-                        <Button type="button" label="Create" @click="submitCreateForm" />
+                        <Button type="submit" label="Create" @click="submitEditForm" />
                     </div>
                 </div>
             </div>

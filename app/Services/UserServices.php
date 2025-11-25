@@ -19,6 +19,13 @@ class UserServices
         return $users;
     }
 
+    public function findUserById($id)
+    {
+        $user = $this->userRepo->find($id);
+
+        return $user;
+    }
+
     public function createUser(array $data)
     {
         $data['password'] = Hash::make($data['password']);
@@ -27,6 +34,24 @@ class UserServices
         unset($data['roles']);
 
         $user = $this->userRepo->create($data);
+
+        $user->roles()->sync($roles);
+
+        return $user;
+    }
+
+    public function editUser(int $id, array $data)
+    {
+        $roles = $data['roles'];
+        unset($data['roles']);
+
+        if(!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password'], $data['password_confirmation']);
+        }
+
+        $user = $this->userRepo->update($id, $data);
 
         $user->roles()->sync($roles);
 
