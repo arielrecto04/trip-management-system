@@ -6,6 +6,8 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import PrimeVue from 'primevue/config';
+import Toast from 'primevue/toast';
+import { ToastService } from 'primevue';
 import 'primeicons/primeicons.css';
 import Aura from '@primeuix/themes/aura';
 
@@ -22,11 +24,13 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(ToastService)
             .use(PrimeVue, {
                 theme: {
                     preset: Aura,
                 },
             })
+            .component('Toast', Toast)
             .mount(el);
     },
     progress: {
