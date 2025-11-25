@@ -5,20 +5,13 @@ import { ref } from 'vue'
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
-import InputLabel from '@/Components/InputLabel.vue';
-import Checkbox from 'primevue/checkbox';
-import CheckboxGroup from 'primevue/checkboxgroup';
-import InputError from '@/Components/InputError.vue';
+import { useGlobalToast } from '@/Utils/toast'; 
+
+const { success, error } = useGlobalToast();
 
 const { props } = usePage();
 const users = ref(props.users);
-const roles = ref(props.roles);
 
-
-const createVisible = ref(false);
-const editVisible = ref(false);
 
 const roleBadgeClass = (slug) => {
     switch(slug) {
@@ -32,44 +25,7 @@ const roleBadgeClass = (slug) => {
     }
 };
 
-const createForm = useForm({
-    name: '',
-    email: '',
-    phone_number: '',
-    roles: [],
-    password: '',
-    password_confirmation: '',
-});
-
 const deleteForm = useForm({});
-
-
-const submitCreateForm = () => { 
-    createForm.post('/users', { 
-        onSuccess: (page) => { 
-            users.value.push(page.props.newUser), 
-            createForm.reset(), q
-            createVisible.value = false 
-            console.log('Create user success');
-        }, 
-        onError: () => { 
-            if(createForm.errors.name) { 
-                createForm.reset('name'); 
-            } 
-            if(createForm.errors.email) { 
-                createForm.reset('email'); 
-            } 
-            if(createForm.errors.password) { 
-                createForm.reset('password', 'password_confirmation'); 
-            } 
-            if(createForm.errors.phone_number) { 
-                createForm.reset('phone_number'); 
-            } 
-
-            console.log('Failed to create user');
-        } 
-    }) 
-}
 
 const deleteUser = (id) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
@@ -77,8 +33,10 @@ const deleteUser = (id) => {
     deleteForm.delete(`/users/${id}`, {
         onSuccess: () => {
             users.value = users.value.filter(u => u.id !== id);
+            success('User created successfully');
         },
         onError: () => {
+            error('Failed to create user');
             console.log('Failed to delete user');
         }
     });

@@ -27,13 +27,15 @@ class UserRepository implements UserRepositoryInterface
     public function update($id, array $data)
     {
         $user = User::findOrFail($id);
-        return $user->update($data);
+        $user->update($data);
+        return $user;
     }
 
     public function delete($id)
     {
         $user = User::findOrFail($id);
-        return $user->delete();
+        $user->delete();
+        return $user;
     }
 
     public function getUserByRoleSlug($slug)

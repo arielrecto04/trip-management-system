@@ -8,6 +8,10 @@ import InputText from 'primevue/inputtext';
 import InputLabel from '@/Components/InputLabel.vue';
 import Checkbox from 'primevue/checkbox';
 import InputError from '@/Components/InputError.vue';
+import { useGlobalToast } from '@/Utils/toast'; 
+
+const { success, error } = useGlobalToast();
+
 
 const { props } = usePage();
 const user = ref(props.user);
@@ -45,9 +49,11 @@ const submitEditForm = () => {
                 editForm.phone_number = page.props.user.phone_number;
                 editForm.roles = page.props.user.roles.map(r => r.id);
             }
-            console.log('update user success');
+            success('User updated successfully');
+            console.log('User updated successfully');
         },
         onError: () => {
+            error('Failed to update user');
             console.log('Failed to update user');
         }
     })
@@ -144,7 +150,7 @@ const submitEditForm = () => {
 
                     <!-- Buttons -->
                     <div class="flex justify-end gap-2 mt-8">
-                        <Button type="submit" label="Create" @click="submitEditForm" />
+                        <Button type="submit" label="Update" @click="submitEditForm" />
                     </div>
                 </div>
             </div>

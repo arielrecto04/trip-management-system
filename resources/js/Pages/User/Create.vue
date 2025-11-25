@@ -3,18 +3,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue'
 import { usePage } from '@inertiajs/vue3';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import InputLabel from '@/Components/InputLabel.vue';
 import Checkbox from 'primevue/checkbox';
-import CheckboxGroup from 'primevue/checkboxgroup';
 import InputError from '@/Components/InputError.vue';
+import { useGlobalToast } from '@/Utils/toast'; 
+
+const { success, error } = useGlobalToast();
 
 const { props } = usePage();
-const users = ref(props.users);
 const roles = ref(props.roles);
 
 
@@ -32,10 +30,10 @@ const createForm = useForm({
 const submitCreateForm = () => { 
     createForm.post('/users', { 
         onSuccess: (page) => { 
-            users.value.push(page.props.newUser), 
             createForm.reset(), 
             createVisible.value = false,
-            console.log('create user success');
+            success('User created successfully')
+            console.log('User created successfully');
         }, 
         onError: () => { 
             if(createForm.errors.name) { 
@@ -51,6 +49,7 @@ const submitCreateForm = () => {
                 createForm.reset('phone_number'); 
             } 
 
+            error('Failed to create user');
             console.log('Failed to create user');
         } 
     }) 
