@@ -22,6 +22,8 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
 
     Route::get('/users', [UserController::class, 'index'])
         ->name('users');
+    Route::get('/users/create', [UserController::class, 'create'])
+        ->name('users.create');
     Route::post('/users', [UserController::class, 'store']);
     Route::delete('/users/{id}', [UserController::class, 'destroy'])
         ->name('user.destroy');
@@ -29,8 +31,7 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('user.update');
     Route::get('/users/{id}', [UserController::class, 'edit'])
         ->name('users.edit');
-    Route::get('/users/create', [UserController::class, 'create'])
-        ->name('users.create');
+
 });
 
 Route::middleware('auth')->group(function () {
