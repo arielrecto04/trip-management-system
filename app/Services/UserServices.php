@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class UserServices
@@ -28,29 +29,17 @@ class UserServices
 
     public function createUser(array $data)
     {
-        $data['password'] = Hash::make($data['password']);
+        $data = $this->preparePassword($data);
 
-        $roles = $data['roles'];
-        unset($data['roles']);
-
-        $file = $data['profile_picture'] ?? null;
-        unset($data['profile_picture']);
+        $roles = $this->extractRoles($data);
+        $profile_picture = $this->extractProfilePicture($data);
 
         $user = $this->userRepo->create($data);
 
         $user->roles()->sync($roles);
 
-        if ($file) {
-            $path = $file->store('uploads/profile_pictures', 'public');
-
-            $user->profilePicture()->create([
-                'name' => $file->getClientOriginalName(),
-                'size' => $file->getSize(),
-                'extension' => $file->getClientOriginalExtension(),
-                'url' => $path,
-                'uploaded_by' => auth()->id(),
-                'type' => 'profile_picture',
-            ]);
+        if ($profile_picture) {
+            $this->uploadProfilePicture($user, $profile_picture);
         }
 
         return $user;
@@ -58,63 +47,17 @@ class UserServices
 
     public function editUser(int $id, array $data)
     {
-        $roles = $data['roles'];
-        unset($data['roles']);
+        $roles = $this->extractRoles($data);
+        $profile_picture = $this->extractProfilePicture($data);
+        $removePicture = $data['remove_profile_picture'] ?? false;
 
-        $file = $data['profile_picture'] ?? null;
-        unset($data['profile_picture']);
-
-        if(!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password'], $data['password_confirmation']);
-        }
-
+        $data = $this->preparePassword($data);
 
         $user = $this->userRepo->update($id, $data);
 
         $user->roles()->sync($roles);
 
-        if (!empty($userData['remove_profile_picture'])) {
-            $user->load('profilePicture');
-            
-            if ($user->profilePicture && $user->profilePicture->url) {
-                Storage::delete($user->profilePicture->url);
-                $user->profilePicture->delete();
-            }
-        }
-
-        if ($file) {
-            $path = $file->store('uploads/profile_pictures', 'public');
-
-            // Replace or create profile picture
-            if ($user->profilePicture) {
-                // Delete old file
-                \Storage::disk('public')->delete($user->profilePicture->url);
-                $user->profilePicture->update([
-                    'name' => $file->getClientOriginalName(),
-                    'size' => $file->getSize(),
-                    'extension' => $file->getClientOriginalExtension(),
-                    'url' => $path,
-                    'uploaded_by' => auth()->id(),
-                ]);
-            } else {
-                $user->profilePicture()->create([
-                    'name' => $file->getClientOriginalName(),
-                    'size' => $file->getSize(),
-                    'extension' => $file->getClientOriginalExtension(),
-                    'url' => $path,
-                    'uploaded_by' => auth()->id(),
-                    'type' => 'profile_picture',
-                ]);
-            }
-        } elseif ($data['remove_profile_picture'] ?? false) {
-            // Remove old picture if user clicked remove
-            if ($user->profilePicture) {
-                \Storage::disk('public')->delete($user->profilePicture->url);
-                $user->profilePicture()->delete();
-            }
-        }
+        $this->handleProfilePicture($user, $profile_picture, $removePicture);
 
         return $user;
     }
@@ -126,4 +69,83 @@ class UserServices
         return $user;
     }
 
+
+
+    // private
+    private function preparePassword(array $data)
+    {
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password'], $data['password_confirmation']);
+        }
+
+        return $data;
+    }
+
+    private function extractRoles(array $data)
+    {
+        $roles = $data['roles'];
+        unset($data['roles']);
+
+        return $roles;
+    }
+
+    private function extractProfilePicture(array $data)
+    {
+        $file = $data['profile_picture'] ?? null;
+        unset($data['profile_picture']);
+
+        return $file;
+    }
+
+    private function handleProfilePicture($user, $file, bool $remove)
+    {
+        if($file)
+        {
+            $this->uploadProfilePicture($user, $file);
+            return;
+        }
+
+        if($remove)
+        {
+            $this->deleteProfilePicture($user);
+        }
+    }
+
+    private function uploadProfilePicture($user, $file)
+    {
+        $path = $file->store('uploads/profile_pictures', 'public');
+
+        if ($user->profilePicture) {
+            Storage::disk('public')->delete($user->profilePicture->url);
+            $user->profilePicture->update([
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'extension' => $file->getClientOriginalExtension(),
+                'url' => $path,
+                'uploaded_by' => auth()->id(),
+            ]);
+        } else {
+            $user->profilePicture()->create([
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'extension' => $file->getClientOriginalExtension(),
+                'url' => $path,
+                'uploaded_by' => auth()->id(),
+                'type' => 'profile_picture',
+            ]);
+        }
+    }
+
+    private function deleteProfilePicture($user)
+    {
+        if(!$user->profilePicture)
+        {
+            return;
+        }
+
+        Storage::disk('public')->delete($user->profilePicture->url);
+        $user->profilePicture()->delete();
+    }
 }

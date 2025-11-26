@@ -18,10 +18,11 @@ class UserController extends Controller
     public function index()
     {
         $users = $this->userService->showAllUsers();
-        $users->load('profilePicture', 'roles');
+        $roles = $this->roleServices->showAllRoles();
 
         return Inertia::render('User/Index', [
             'users' => $users,
+            'roles' => $roles,
         ]);
     }
 
@@ -39,23 +40,21 @@ class UserController extends Controller
         $userData = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|integer|unique:users,phone_number',
+            'phone_number' => ['required', 'string', 'unique:users,phone_number', 'regex:/^(09\d{9}|\+639\d{9})$/'],
             'password' => 'required|confirmed',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
             'profile_picture' => 'nullable|image|max:2048',
         ]);
 
-        $user = $this->userService->createUser($userData);
-        $user->load('roles', 'profilePicture');
+        $this->userService->createUser($userData);
 
         return redirect()->route('users');
     }
 
     public function update(Request $request, $id)
     {
-        $user = $this->userService->findUserById($id);
-        $user->load('profilePicture', 'roles');
+        $this->userService->findUserById($id);
 
         $userData = $request->validate([
             'name' => 'required',
@@ -76,7 +75,6 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = $this->userService->findUserById($id);
-        $user->load('roles', 'profilePicture');
         $roles = $this->roleServices->showAllRoles();
 
         return Inertia::render('User/Edit', [
