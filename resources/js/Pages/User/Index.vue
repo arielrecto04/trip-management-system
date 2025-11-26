@@ -1,18 +1,34 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, usePage, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
+import MultiSelect from 'primevue/multiselect';
 
 import { useGlobalToast } from '@/Utils/toast';
 
 const { success, error } = useGlobalToast();
 const { props } = usePage();
 const users = ref(props.users);
+const roles = ref(props.roles.map(role => ({
+    id: role.id,
+    name: role.name,
+    slug: role.slug,
+})));
+
+const selectedRoles = ref([]);
+
+const filteredUser = computed(() => {
+    if(selectedRoles.value.length === 0) return users.value;
+
+    return users.value.filter(user => {
+        return user.roles.some(role => selectedRoles.value.includes(role.id));
+    })
+})
 
 const deleteUser = (id) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
@@ -54,7 +70,17 @@ const roleBadgeClass = (slug) => {
                 <!-- Toolbar -->
                 <Toolbar class="mb-4">
                     <template #start>
-                        <h3 class="text-lg font-semibold">User List</h3>
+                        <MultiSelect 
+                            v-model="selectedRoles" 
+                            :options="roles" 
+                            optionLabel="name" 
+                            optionValue="id"
+                            filter 
+                            filterBy="name"
+                            placeholder="Select Roles"
+                            :maxSelectedLabels="3" 
+                            class="w-full md:w-80" 
+                        />
                     </template>
 
                     <template #end>
@@ -66,7 +92,7 @@ const roleBadgeClass = (slug) => {
 
                 <!-- Table -->
                 <DataTable 
-                    :value="users" 
+                    :value="filteredUser" 
                     dataKey="id"
                     stripedRows
                     paginator
