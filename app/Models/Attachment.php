@@ -9,6 +9,7 @@ class Attachment extends Model
     protected $fillable = [
         'name',
         'attachable',
+        'type',
         'size',
         'extension',
         'url',

@@ -57,4 +57,9 @@ class User extends Authenticatable
         return $this->morphMany(Attachment::class, 'attachable');
     }
 
+    public function profilePicture()
+    {
+        return $this->morphOne(Attachment::class, 'attachable')
+            ->where('type', 'profile_picture');
+    }
 }

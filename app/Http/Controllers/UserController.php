@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\RoleServices;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -17,11 +18,10 @@ class UserController extends Controller
     public function index()
     {
         $users = $this->userService->showAllUsers();
-        $allRoles = $this->roleServices->showAllRoles();
+        $users->load('profilePicture', 'roles');
 
         return Inertia::render('User/Index', [
             'users' => $users,
-            'roles' => $allRoles,
         ]);
     }
 
@@ -43,16 +43,20 @@ class UserController extends Controller
             'password' => 'required|confirmed',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
+            'profile_picture' => 'nullable|image|max:2048',
         ]);
 
         $user = $this->userService->createUser($userData);
-        $user->load('roles');
+        $user->load('roles', 'profilePicture');
 
         return redirect()->route('users');
     }
 
     public function update(Request $request, $id)
     {
+        $user = $this->userService->findUserById($id);
+        $user->load('profilePicture', 'roles');
+
         $userData = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -60,17 +64,19 @@ class UserController extends Controller
             'password' => 'nullable|confirmed',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
+            'profile_picture' => 'nullable|image|max:2048',
+            'remove_profile_picture' => 'sometimes|boolean',
         ]);
 
-        $user = $this->userService->editUser($id, $userData);
-        $user->load('roles');
-
+        $this->userService->editUser($id, $userData);
+        
         return redirect()->route('users');
     }
 
     public function edit($id)
     {
-        $user = $this->userService->findUserById($id)->load('roles');
+        $user = $this->userService->findUserById($id);
+        $user->load('roles', 'profilePicture');
         $roles = $this->roleServices->showAllRoles();
 
         return Inertia::render('User/Edit', [

@@ -24,13 +24,15 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('users');
     Route::get('/users/create', [UserController::class, 'create'])
         ->name('users.create');
-    Route::post('/users', [UserController::class, 'store']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])
-        ->name('user.destroy');
-    Route::put('/users/{id}', [UserController::class, 'update'])
-        ->name('user.update');
+    Route::post('/users', [UserController::class, 'store'])
+        ->name('users.store'); // Add name for consistency
+    
     Route::get('/users/{id}', [UserController::class, 'edit'])
         ->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])
+        ->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])
+        ->name('users.destroy');
 
 });
 

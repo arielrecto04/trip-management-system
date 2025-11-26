@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type')->nullable();
             $table->morphs('attachable');
             $table->string('size')->nullable();
             $table->string('extension')->nullable();
