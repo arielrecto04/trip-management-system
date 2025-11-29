@@ -17,6 +17,10 @@ class Driver extends Model
         'license_expiration',
     ];
 
+    protected $with = [
+        'user'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
