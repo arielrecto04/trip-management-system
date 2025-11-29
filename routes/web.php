@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -27,12 +28,21 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
     Route::post('/users', [UserController::class, 'store'])
         ->name('users.store'); // Add name for consistency
     
-    Route::get('/users/{id}', [UserController::class, 'edit'])
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])
         ->name('users.edit');
     Route::put('/users/{id}', [UserController::class, 'update'])
         ->name('users.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])
         ->name('users.destroy');
+
+    Route::get('/drivers', [DriverController::class, 'index'])
+        ->name('drivers');
+    Route::get('/drivers/create', [DriverController::class, 'create'])
+        ->name('drivers.create');
+    Route::get('/drivers/{id}/edit', [DriverController::class, 'edit'])
+        ->name('drivers.edit');
+    Route::post('/drivers', [DriverController::class, 'store'])
+        ->name('drivers.store');
 
 });
 

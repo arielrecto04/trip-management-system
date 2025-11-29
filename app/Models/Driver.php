@@ -29,12 +29,23 @@ class Driver extends Model
 
     public function complianceDocs()
     {
-        return $this->morphMany(ComplianceDocs::class, 'compliable');
+        return $this->morphMany(ComplianceDoc::class, 'compliable');
     }
 
     public function attachments()
     {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function driverLicense()
+    {
+        return $this->morphMany(Attachment::class, 'attachable')
+            ->where('type', 'driver_license');
+    }
+
+    public function licenseRestrictions()
+    {
+        return $this->hasMany(LicenseRestriction::class);
     }
 
     public function trips()

@@ -14,7 +14,10 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)
+                ->unique()
+                ->constrained()
+                ->cascadeOnDelete();
             $table->string('license_number')->unique();
             $table->string('license_restriction')->nullable();
             $table->date('license_expiration');

@@ -57,6 +57,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function has_driver_role()
+    {
+        return $this->roles->contains('slug', 'driver');
+    }
+
+    public function driver()
+    {
+        return $this->hasOne(Driver::class);
+    }
+
     public function attachable()
     {
         return $this->morphMany(Attachment::class, 'attachable');

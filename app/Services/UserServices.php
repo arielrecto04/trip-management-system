@@ -10,7 +10,8 @@ use Inertia\Inertia;
 class UserServices
 {
     public function __construct(
-        protected UserRepositoryInterface $userRepo
+        protected UserRepositoryInterface $userRepo,
+        protected UserRoleServices $userRoleServices,
     ) {}
 
     public function showAllUsers()
@@ -27,16 +28,29 @@ class UserServices
         return $user;
     }
 
+    public function showUsersWithDriverRole()
+    {
+        $drivers = $this->userRepo->getUserByRoleSlug('driver');
+
+        return $drivers;
+    }
+
     public function createUser(array $data)
     {
+        // extracting values
         $data = $this->preparePassword($data);
-
         $roles = $this->extractRoles($data);
         $profile_picture = $this->extractProfilePicture($data);
 
         $user = $this->userRepo->create($data);
 
-        $user->roles()->sync($roles);
+        if(in_array($this->userRepo->getUserByRoleSlug('driver'), $roles)) {
+            $this->userRoleServices->assignDriverRole($user);
+        } else {
+            foreach($roles as $role) {
+                $this->userRoleServices->assignRole($user, $role);
+            }
+        }
 
         if ($profile_picture) {
             $this->uploadProfilePicture($user, $profile_picture);
@@ -55,7 +69,9 @@ class UserServices
 
         $user = $this->userRepo->update($id, $data);
 
-        $user->roles()->sync($roles);
+        foreach($roles as $role) {
+            $this->userRoleServices->assignRole($user, $role);
+        }
 
         $this->handleProfilePicture($user, $profile_picture, $removePicture);
 
@@ -103,13 +119,12 @@ class UserServices
     {
         if($file)
         {
-            $this->uploadProfilePicture($user, $file);
-            return;
+            return $this->uploadProfilePicture($user, $file);
         }
 
         if($remove)
         {
-            $this->deleteProfilePicture($user);
+            return $this->deleteProfilePicture($user);
         }
     }
 
