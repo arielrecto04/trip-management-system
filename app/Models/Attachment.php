@@ -8,7 +8,8 @@ class Attachment extends Model
 {
     protected $fillable = [
         'name',
-        'attachable',
+        'attachable_id',
+        'attachable_type',
         'type',
         'size',
         'extension',
