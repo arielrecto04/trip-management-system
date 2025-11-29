@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ComplianceDocs extends Model
+class ComplianceDoc extends Model
 {
     protected $fillable = [
         'compliable_id',
@@ -12,11 +12,14 @@ class ComplianceDocs extends Model
         'doc_type',
         'doc_number',
         'expiration_date',
-        'file_path',
     ];
 
     public function compliable()
     {
         return $this->morphTo();
+    }
+
+    public function attachments(){
+        return $this->morphMany(Attachment::class, 'attachable');
     }
 }

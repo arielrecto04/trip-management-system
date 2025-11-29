@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TripExpenses extends Model
+class TripExpense extends Model
 {
     protected $fillable = [
         'driver_id',
