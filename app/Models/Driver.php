@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Driver extends Model
 {
@@ -20,6 +21,22 @@ class Driver extends Model
     protected $with = [
         'user'
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($driver) {
+
+            foreach ($driver->complianceDocs as $doc) {
+
+                foreach ($doc->attachments as $docAttachment) {
+                    Storage::disk('public')->delete($docAttachment->url);
+                    $docAttachment->delete();
+                }
+
+                $doc->delete();
+            }
+        });
+    }
 
     public function user()
     {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\DriverRepositoryInterface;
+use Illuminate\Support\Facades\Storage;
 
 class DriverServices {
 
@@ -41,7 +42,7 @@ class DriverServices {
         ]);
 
         foreach($license_images as $image) {
-            $path = $image->store('driver_licenses', 'public');
+            $path = $image->store('uploads/driver_licenses', 'public');
 
             $licenseDoc->attachments()->create([
                 'name'        => $image->getClientOriginalName(),
@@ -52,6 +53,13 @@ class DriverServices {
                 'uploaded_by' => auth()->id(),
             ]);
         }
+
+        return $driver;
+    }
+
+    public function deleteDriver(int $id) 
+    {
+        $driver = $this->driverRepo->delete($id);
 
         return $driver;
     }

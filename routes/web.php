@@ -43,6 +43,8 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('drivers.edit');
     Route::post('/drivers', [DriverController::class, 'store'])
         ->name('drivers.store');
+    Route::delete('/drivers/{id}', [DriverController::class, 'destroy'])
+        ->name('drivers.destory');
 
 });
 

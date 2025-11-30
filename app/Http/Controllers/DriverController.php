@@ -45,7 +45,7 @@ class DriverController extends Controller
     public function store(Request $request)
     {
         $driverData = $request->validate([
-            'user_id' => 'required',
+            'user_id' => 'required|unique:drivers,user_id',
             'license_number' => 'required|string',
             'license_restriction' => 'required',
             'license_expiration' => 'required',
@@ -85,8 +85,10 @@ class DriverController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $this->driverServices->deleteDriver($id);
+
+        return redirect()->route('drivers');
     }
 }
