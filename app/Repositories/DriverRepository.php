@@ -24,10 +24,11 @@ class DriverRepository implements DriverRepositoryInterface {
         return Driver::create($data);
     }
 
-    public function update($id, array $data)
+    public function update(int $id, array $data)
     {
         $driver = Driver::findOrFail($id);
-        return $driver->update($data);
+        $driver->update($data);
+        return $driver;
     }
 
     public function delete($id)
