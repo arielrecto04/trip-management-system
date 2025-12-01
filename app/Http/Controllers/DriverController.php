@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Driver;
 use App\Services\DriverServices;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
@@ -69,9 +70,14 @@ class DriverController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $driver = Driver::with(['driverLicense', 'licenseRestrictions', 'user'])
+                 ->findOrFail($id);        
+
+        return Inertia::render('Driver/Edit', [
+            'driver' => $driver,
+        ]);
     }
 
     /**
@@ -79,7 +85,20 @@ class DriverController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $driverData = $request->validate([
+            'license_number' => 'required|string',
+            'license_restriction' => 'required',
+            'license_expiration' => 'required',
+
+            'new_license_images' => 'array',
+            'new_license_images.*' => 'image|max:2048',
+
+            'remove_existing_license_images' => 'boolean',
+        ]);
+
+        $this->driverServices->updateDriver($id, $driverData);
+
+        return redirect()->route('drivers');
     }
 
     /**

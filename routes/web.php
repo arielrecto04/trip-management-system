@@ -41,10 +41,12 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('drivers.create');
     Route::get('/drivers/{id}/edit', [DriverController::class, 'edit'])
         ->name('drivers.edit');
+    Route::put('/drivers/{id}', [DriverController::class, 'update'])
+        ->name('drivers.update');
     Route::post('/drivers', [DriverController::class, 'store'])
         ->name('drivers.store');
     Route::delete('/drivers/{id}', [DriverController::class, 'destroy'])
-        ->name('drivers.destory');
+        ->name('drivers.destroy');
 
 });
 
