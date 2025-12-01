@@ -84,11 +84,9 @@ const removeLicenseImages = () => {
 
 
 const submitCreateForm = () => {
-    const formData = { ...createForm };
-
-    if(formData.license_expiration) {
-        const date = new Date(formData.license_expiration);
-        formData.license_expiration = date.toISOString().split('T')[0];
+    if(createForm.license_expiration) {
+        const date = new Date(createForm.license_expiration);
+        createForm.license_expiration = date.toISOString().split('T')[0];
     }
 
     createForm.post('/drivers', {
