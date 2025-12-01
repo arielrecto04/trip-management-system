@@ -14,12 +14,12 @@ class Driver extends Model
     protected $fillable = [
         'user_id',
         'license_number',
-        'license_restriction',
         'license_expiration',
     ];
 
     protected $with = [
-        'user'
+        'user',
+        'licenseRestrictions',
     ];
 
     protected static function booted()
@@ -60,8 +60,16 @@ class Driver extends Model
 
     public function driverLicense()
     {
-        return $this->morphMany(Attachment::class, 'attachable')
-            ->where('type', 'driver_license');
+        return $this->hasManyThrough(
+            Attachment::class,       // final target
+            ComplianceDoc::class,    // intermediate
+            'compliable_id',         // FK on compliance_docs
+            'attachable_id',         // FK on attachments
+            'id',                    // local key on driver
+            'id'                     // local key on compliance_doc
+        )
+        ->where('compliable_type', Driver::class) // only docs of this driver
+        ->where('type', 'driver_license');       // only license images
     }
 
     public function licenseRestrictions()
