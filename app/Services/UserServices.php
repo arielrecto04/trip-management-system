@@ -59,7 +59,7 @@ class UserServices
         return $user;
     }
 
-    public function editUser(int $id, array $data)
+    public function updateUser(int $id, array $data)
     {
         $roles = $this->extractRoles($data);
         $profile_picture = $this->extractProfilePicture($data);
