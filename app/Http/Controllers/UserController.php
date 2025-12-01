@@ -67,7 +67,7 @@ class UserController extends Controller
             'remove_profile_picture' => 'sometimes|boolean',
         ]);
 
-        $this->userService->editUser($id, $userData);
+        $this->userService->updateUser($id, $userData);
         
         return redirect()->route('users');
     }
