@@ -16,7 +16,6 @@ const { props } = usePage();
 
 const drivers = ref(props.drivers);
 
-// Extract vehicle list options for filtering
 const vehicleOptions = ref(
     props.vehicles?.map(v => ({
         id: v.id,
@@ -26,7 +25,6 @@ const vehicleOptions = ref(
 
 const selectedVehicles = ref([]);
 
-// Filter by selected vehicle assigned in history
 const filteredDrivers = computed(() => {
     if (selectedVehicles.value.length === 0) return drivers.value;
 
@@ -61,7 +59,6 @@ const deleteDriver = (id) => {
         <div class="py-4 px-6">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
-                <!-- Toolbar -->
                 <Toolbar class="mb-4 bg-navcolor-light dark:bg-navcolor-dark">
                     <template #start>
                         <MultiSelect
@@ -84,7 +81,6 @@ const deleteDriver = (id) => {
                     </template>
                 </Toolbar>
 
-                <!-- Table -->
                 <DataTable
                     :value="filteredDrivers"
                     dataKey="id"
@@ -94,7 +90,6 @@ const deleteDriver = (id) => {
                     class="shadow rounded-lg"
                 >
 
-                    <!-- Avatar -->
                     <Column header="Avatar" class="w-20 text-center">
                         <template #body="{ data }">
                             <img
@@ -106,7 +101,6 @@ const deleteDriver = (id) => {
                         </template>
                     </Column>
 
-                    <!-- Name -->
                     <Column header="Driver Name">
                         <template #body="{ data }">
                             {{ data.user.name }}
@@ -119,12 +113,19 @@ const deleteDriver = (id) => {
                         </template>
                     </Column>
 
-                    <!-- License -->
                     <Column header="License">
                         <template #body="{ data }">
                             <div class="text-sm">
                                 <div><b>No:</b> {{ data.license_number }}</div>
-                                <div><b>Restriction:</b> {{ data.license_restriction }}</div>
+                                <div>
+                                    <b>Restriction: </b>
+                                    <span v-if="data.license_restrictions && data.license_restrictions.length">
+                                        {{ data.license_restrictions.map(r => r.code).join(', ') }}
+                                    </span>
+                                    <span v-else>
+                                        None
+                                    </span>
+                                </div>
                                 <div><b>Expires:</b> {{ data.license_expiration }}</div>
                             </div>
                         </template>
