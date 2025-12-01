@@ -19,7 +19,6 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->string('license_number')->unique();
-            $table->string('license_restriction')->nullable();
             $table->date('license_expiration');
             $table->timestamps();
         });
