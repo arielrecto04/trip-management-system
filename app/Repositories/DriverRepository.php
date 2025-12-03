@@ -14,9 +14,14 @@ class DriverRepository implements DriverRepositoryInterface {
         return Driver::all();
     }
 
-    public function find($id)
+    public function find(int $id)
     {
         return Driver::findOrFail($id);
+    }
+
+    public function findWithRelation(int $id, array $relation)
+    {
+        return Driver::with($relation)->findOrFail($id);
     }
 
     public function create(array $data)

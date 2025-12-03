@@ -69,6 +69,7 @@ class Driver extends Model
             'id'                     // local key on compliance_doc
         )
         ->where('compliable_type', Driver::class) // only docs of this driver
+        ->where('attachable_id', Attachment::class)
         ->where('type', 'driver_license');       // only license images
     }
 

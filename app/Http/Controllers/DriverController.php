@@ -72,9 +72,8 @@ class DriverController extends Controller
      */
     public function edit($id)
     {
-        $driver = Driver::with(['driverLicense', 'licenseRestrictions', 'user'])
-                 ->findOrFail($id);        
-
+        $driver = $this->driverServices->showDriverWithId($id);
+        
         return Inertia::render('Driver/Edit', [
             'driver' => $driver,
         ]);

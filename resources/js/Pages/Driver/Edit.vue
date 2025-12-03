@@ -46,7 +46,6 @@ const editForm = useForm({
 });
 
 
-console.log(driver);
 const previewImages = ref([]);
 
 const oldLicenseImages = ref(driver.driver_license || []);

@@ -9,6 +9,7 @@ class DriverServices {
 
     public function __construct(
         protected DriverRepositoryInterface $driverRepo,
+        protected DriverLicenseServices $licenseServices
     )
     {}
 
@@ -17,6 +18,34 @@ class DriverServices {
         $drivers = $this->driverRepo->all();
 
         return $drivers;
+    }
+
+    public function showDriverWithId(int $id)
+    {
+        $driver = $this->driverRepo->findWithRelation($id, [
+            'licenseRestrictions',
+            'user',
+            'complianceDocs.attachments'
+        ]);
+
+        if (!$driver) {
+            return null;
+        }
+
+        $driver->driver_license = $driver->complianceDocs
+            ->where('doc_type', 'license')
+            ->flatMap(function ($licenseDoc) {
+                return $licenseDoc->attachments->map(function ($attachment) {
+                    return [
+                        'id' => $attachment->id,
+                        'url' => $attachment->url,
+                        'name' => $attachment->name,
+                    ];
+                });
+            })
+            ->values();
+            
+        return $driver;
     }
 
     public function showDriverById(int $id)
@@ -28,38 +57,22 @@ class DriverServices {
 
     public function createDriver(array $data)
     {
-        $license_images = $data['license_images'];
-        unset($data['license_images']);
+        $driverData = [
+            'user_id' => $data['user_id'],
+            'license_number' => $data['license_number'],
+            'license_expiration' => $data['license_expiration'],
+        ];
+        
+        $licenseData = [
+            'license_expiration' => $data['license_expiration'],
+            'license_number' => $data['license_number'],
+            'license_images' => $data['license_images']
+        ];
 
-        $license_restriction = $data['license_restriction'];
-        unset($data['license_restriction']);
+        $driver = $this->driverRepo->create($driverData);
 
-        $driver = $this->driverRepo->create($data);
-
-        foreach($license_restriction as $code) {
-            $driver->licenseRestrictions()->create([
-                'code' => $code
-            ]);
-        }
-
-        $licenseDoc = $driver->complianceDocs()->create([
-            'doc_type' => 'license',
-            'doc_number' => $data['license_number'],
-            'expiration_date' => date('Y-m-d', strtotime($data['license_expiration'])),
-        ]);
-
-        foreach($license_images as $image) {
-            $path = $image->store('uploads/driver_licenses', 'public');
-
-            $licenseDoc->attachments()->create([
-                'name'        => $image->getClientOriginalName(),
-                'type'        => 'driver_license',
-                'extension'   => $image->getClientOriginalExtension(),
-                'size'        => $image->getSize(),
-                'url'         => $path,
-                'uploaded_by' => auth()->id(),
-            ]);
-        }
+        $this->licenseServices->createLicense($driver, $licenseData);
+        $this->licenseServices->syncRestrictions($driver, $data['license_restriction']);
 
         return $driver;
     }
@@ -68,65 +81,25 @@ class DriverServices {
     {
         $driver = $this->driverRepo->find($id);
 
-        // extract
-        $newLicenseImages = $data['new_license_images'] ?? [];
-        unset($data['new_license_images']);
+        $driverUpdateData = [
+            'license_number'     => $data['license_number'] ?? $driver->license_number,
+            'license_expiration' => $data['license_expiration'] ?? $driver->license_expiration,
+        ];
 
-        $removeOldImages = $data['remove_existing_license_images'] ?? false;
-        unset($data['remove_existing_license_images']);
+        $this->driverRepo->update($id, $driverUpdateData);
 
-        $licenseRestrictions = $data['license_restriction'] ?? [];
-        unset($data['license_restriction']);
+        $licenseData = [
+            'license_number'      => $data['license_number'] ?? $driver->license_number,
+            'license_expiration'  => $data['license_expiration'] ?? $driver->license_expiration,
+            'new_license_images'  => $data['new_license_images'] ?? [],
+            'remove_existing_license_images' => $data['remove_existing_license_images'] ?? false,
+            'license_restriction' => $data['license_restriction'] ?? [],
+        ];
 
-        $this->driverRepo->update($id, $data);
+        $this->licenseServices->updateLicense($driver, $licenseData);
+        $this->licenseServices->syncRestrictions($driver, $licenseData['license_restriction']);
 
-        $driver->licenseRestrictions()->delete();
-        foreach($licenseRestrictions as $code) {
-            $driver->licenseRestrictions()->create([
-                'code' => $code,
-            ]);
-        }
-
-        $licenseDoc = $driver->complianceDocs()
-            ->where('doc_type', 'license')
-            ->first();
-
-        if (!$licenseDoc) {
-            $licenseDoc = $driver->complianceDocs()->create([
-                'doc_type'       => 'license',
-                'doc_number'     => $data['license_number'],
-                'expiration_date'=> $data['license_expiration'],
-            ]);
-        } else {
-            $licenseDoc->update([
-                'doc_number'     => $data['license_number'],
-                'expiration_date'=> $data['license_expiration'],
-            ]);
-        }
-
-        $licenseDoc->load('attachments');
-
-        if ($removeOldImages) {
-            foreach ($licenseDoc->attachments as $attachment) {
-                Storage::disk('public')->delete($attachment->url);
-                $attachment->delete();
-            }
-        }
-
-        foreach ($newLicenseImages as $image) {
-            $path = $image->store('uploads/driver_licenses', 'public');
-
-            $licenseDoc->attachments()->create([
-                'name'        => $image->getClientOriginalName(),
-                'type'        => 'driver_license',
-                'extension'   => $image->getClientOriginalExtension(),
-                'size'        => $image->getSize(),
-                'url'         => $path,
-                'uploaded_by' => auth()->id(),
-            ]);
-        }
-
-        return $driver;
+        return $driver->fresh();
     }
 
     public function deleteDriver(int $id) 
