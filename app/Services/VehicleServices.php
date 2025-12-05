@@ -233,4 +233,14 @@ class VehicleServices {
         return $driver;
     }
 
+    public function toggleActive(int $id, int $newState)
+    {
+        $vehicle = $this->vehicleRepo->find($id);
+
+        $vehicle->is_active = $newState;
+        $vehicle->save();
+
+        return $vehicle;
+    }
+
 }

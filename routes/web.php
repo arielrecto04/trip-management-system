@@ -62,6 +62,8 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('vehicles.store');
     Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])
         ->name('vehicles.destroy');
+    Route::patch('/vehicles/{id}/toggle-active', [VehicleController::class, 'toggleActive'])
+        ->name('vehicles.toggle');
 });
 
 Route::middleware('auth')->group(function () {

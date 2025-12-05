@@ -2,12 +2,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, usePage, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import axios from 'axios';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import MultiSelect from 'primevue/multiselect';
+import ToggleSwitch from 'primevue/toggleswitch';
 
 import { useGlobalToast } from '@/Utils/toast';
 
@@ -15,6 +17,7 @@ const { success, error } = useGlobalToast();
 const { props } = usePage();
 
 const vehicles = ref(props.vehicles);
+console.log(vehicles);
 
 const activeFilter = ref([]);
 
@@ -23,6 +26,21 @@ const filteredVehicles = computed(() => {
 
     return vehicles.value.filter(v => activeFilter.value.includes(v.is_active));
 });
+
+const toggleActive = (vehicle, newValue) => {
+    const newState = newValue ? 1 : 0;
+
+    axios.patch(`/vehicles/${vehicle.id}/toggle-active`, {
+        is_active: newState,
+    })
+    .then(() => {
+        vehicle.is_active = newState;
+        success(`Vehicle ${vehicle.id} ${newState ? 'activated' : 'deactivated'}`);
+    })
+    .catch(() => {
+        error('Failed to update vehicle');
+    });   
+};
 
 const deleteVehicle = (id) => {
     if (!confirm('Delete this vehicle?')) return;
@@ -109,12 +127,11 @@ const activeStatusClass = (state) => {
 
                     <Column header="Status">
                         <template #body="{ data }">
-                            <span
-                                class="px-2 py-1 rounded-full text-xs font-semibold"
-                                :class="activeStatusClass(data.is_active)"
-                            >
-                                {{ activeStatusLabel(data.is_active) }}
-                            </span>
+                            <ToggleSwitch
+                                :modelValue="Boolean(data.is_active)"
+                                @update:modelValue="(val) => toggleActive(data, val)"
+                                class="w-32"
+                            />
                         </template>
                     </Column>
 

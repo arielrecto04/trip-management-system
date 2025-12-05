@@ -92,5 +92,20 @@ class VehicleController extends Controller
         return back();
     }
 
+    public function toggleActive(Request $request, $id)
+    {
+        $request->validate([
+            'is_active' => ['required', 'integer', 'in:0,1'],
+        ]);
+
+        $toggle = $request->input('is_active');
+
+        $vehicle = $this->vehicleServices->toggleActive($id, $toggle);
+
+        return response()->json([
+            'message' => 'Vehicle status updated',
+            'is_active' => (bool) $vehicle->is_active,
+        ])->header('X-Inertia', 'false');
+    }
 
 }
