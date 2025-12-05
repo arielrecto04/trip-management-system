@@ -7,7 +7,6 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 
 import InputText from "primevue/inputtext";
-import AutoComplete from "primevue/autocomplete";
 import FileUpload from "primevue/fileupload";
 import DatePicker from "primevue/datepicker";
 import Button from "primevue/button";
@@ -19,7 +18,6 @@ const { success, error } = useGlobalToast();
 
 const { props } = usePage();
 const driver = props.driver;
-const users = ref(props.drivers || []);
 
 const licenseRestriction = [
     { code: "A", label: "Motorcycles" },

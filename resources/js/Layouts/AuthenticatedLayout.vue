@@ -61,6 +61,16 @@ const showingNavigationDropdown = ref(false);
                                     Drivers
                                 </NavLink>
                             </div>
+                            <div
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
+                            >
+                                <NavLink
+                                    :href="route('vehicles')"
+                                    :active="route().current('vehicles')"
+                                >
+                                    Vehicles
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
@@ -172,6 +182,18 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('users')"
                         >
                             Users
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('drivers')"
+                            :active="route().current('drivers')"
+                        >
+                            Drivers
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('vehicles')"
+                            :active="route().current('vehicles')"
+                        >
+                            Vehicles
                         </ResponsiveNavLink>
                     </div>
 
