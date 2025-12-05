@@ -1,5 +1,7 @@
 import './bootstrap';
 import '../css/app.css';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -36,4 +38,12 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+});
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
+    iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
+    shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
 });
