@@ -13,7 +13,7 @@ import ToggleSwitch from 'primevue/toggleswitch';
 
 import { useGlobalToast } from '@/Utils/toast';
 
-const { success, error } = useGlobalToast();
+const { success, error, info } = useGlobalToast();
 const { props } = usePage();
 
 const vehicles = ref(props.vehicles);
@@ -35,7 +35,7 @@ const toggleActive = (vehicle, newValue) => {
     })
     .then(() => {
         vehicle.is_active = newState;
-        success(`Vehicle ${vehicle.id} ${newState ? 'activated' : 'deactivated'}`);
+        info(`Vehicle ${vehicle.id} ${newState ? 'activated' : 'deactivated'}`);
     })
     .catch(() => {
         error('Failed to update vehicle');

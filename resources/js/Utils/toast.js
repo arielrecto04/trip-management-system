@@ -11,5 +11,9 @@ export function useGlobalToast() {
         toast.add({ severity: 'error', summary: 'Error', detail: message, life: 5000 });
     }
 
-    return { success, error };
+    function info(message) {
+        toast.add({ severity: 'info', summary: 'Info', detail: message, life: 5000 });
+    }
+
+    return { success, error, info};
 }
