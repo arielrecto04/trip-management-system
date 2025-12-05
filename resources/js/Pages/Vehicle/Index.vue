@@ -10,6 +10,9 @@ import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import MultiSelect from 'primevue/multiselect';
 import ToggleSwitch from 'primevue/toggleswitch';
+import Dialog from 'primevue/dialog';
+import Image from 'primevue/image';
+import FileUpload from 'primevue/fileupload';
 
 import { useGlobalToast } from '@/Utils/toast';
 
@@ -17,6 +20,23 @@ const { success, error, info } = useGlobalToast();
 const { props } = usePage();
 
 const vehicles = ref(props.vehicles);
+
+const showDocsDialog = ref(false);
+const selectedVehicleDocs = ref([]);
+const selectedVehicle = ref(null);
+const selectedVehicleImages = ref([]);
+
+const openDocsDialog = (vehicle) => {
+    selectedVehicle.value = vehicle;
+    selectedVehicleDocs.value = vehicle.compliance_docs ?? [];
+    selectedVehicleImages.value = vehicle.attachments ?? [];
+    showDocsDialog.value = true;
+
+
+    console.log(selectedVehicleImages.value);
+}
+
+
 console.log(vehicles);
 
 const activeFilter = ref([]);
@@ -146,18 +166,19 @@ const activeStatusClass = (state) => {
                         </template>
                     </Column>
 
-                    <Column header="Docs">
-                        <template #body="{ data }">
-                            {{ data.compliance_docs_count ?? 0 }}
-                        </template>
-                    </Column>
-
                     <Column header="Actions" class="w-40">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
                                 <Link :href="route('vehicles.edit', data.id)">
                                     <Button icon="pi pi-pencil" severity="info" rounded />
                                 </Link>
+
+                                <Button 
+                                    icon="pi pi-file"
+                                    severity="help"
+                                    rounded
+                                    @click="openDocsDialog(data)"
+                                />
 
                                 <Button 
                                     icon="pi pi-trash" 
@@ -170,6 +191,89 @@ const activeStatusClass = (state) => {
                     </Column>
 
                 </DataTable>
+                <Dialog
+                    v-model:visible="showDocsDialog"
+                    :header="`Documents for Vehicle (${selectedVehicle?.vin ?? ''})`"
+                    :modal="true"
+                    :style="{ width: '60vw' }"
+                    :closable="true"
+                >
+                    <div class="space-y-10 p-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Vehicle Images</h3>
+
+                            <div 
+                                v-if="selectedVehicleImages.length"
+                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                            >
+                                <div 
+                                    v-for="img in selectedVehicleImages"
+                                    :key="img.id"
+                                    class="rounded-xl shadow-md overflow-hidden bg-white dark:bg-zinc-800 
+                                        border border-gray-200 dark:border-zinc-700 flex flex-col"
+                                >
+                                    <div class="w-full h-48 bg-gray-100 dark:bg-zinc-700 flex items-center justify-center">
+                                        <Image
+                                            preview
+                                            :src="`/storage/${img.url}`"
+                                            alt="Vehicle Image"
+                                            class="max-h-full max-w-full object-contain rounded-md"
+                                        />
+                                    </div>
+
+                                    <div class="p-3 text-sm text-gray-600 dark:text-gray-300 truncate">
+                                        {{ img.name ?? 'Image' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-else class="text-gray-500 text-sm">No images uploaded for this vehicle.</div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Compliance Documents</h3>
+
+                            <div 
+                                v-if="selectedVehicleDocs.length"
+                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6"
+                            >
+                                <div 
+                                    v-for="doc in selectedVehicleDocs" 
+                                    :key="doc.id"
+                                    class="rounded-xl shadow-md overflow-hidden bg-white dark:bg-zinc-800 
+                                        border border-gray-200 dark:border-zinc-700 flex flex-col"
+                                >
+                                    <div class="px-4 py-2 text-blue-700 dark:text-blue-200 font-semibold text-sm">
+                                        {{ doc.doc_type }}
+                                    </div>
+
+                                    <div class="w-full h-56 bg-gray-100 dark:bg-zinc-700 flex items-center justify-center">
+                                        <Image
+                                            preview
+                                            v-if="doc.attachments?.length"
+                                            :src="`/storage/${doc.attachments[0].url}`"
+                                            alt="Document Image"
+                                            class="max-h-full max-w-full object-contain rounded-md"
+                                        />
+                                        <span v-else class="text-gray-400 dark:text-gray-300 text-sm">
+                                            No Image
+                                        </span>
+                                    </div>
+
+                                    <div class="p-4">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300 truncate block">
+                                            {{ doc.attachments?.[0]?.name ?? 'Unknown File' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-else class="text-gray-500 text-sm">No compliance documents found.</div>
+                        </div>
+
+                    </div>
+                </Dialog>
+
             </div>
         </div>
     </AuthenticatedLayout>

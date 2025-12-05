@@ -1,6 +1,16 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import L from "leaflet";
+import { onMounted } from "vue";
+
+onMounted(() => {
+    const map = L.map("map").setView([14.5995, 120.9842], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19
+    }).addTo(map);
+});
 </script>
 
 <template>
@@ -23,6 +33,7 @@ import { Head } from '@inertiajs/vue3';
                     <div class="p-6 text-gray-100">
                         You're logged in!
                     </div>
+                    <div id="map" class="w-full h-[400px]"></div>
                 </div>
             </div>
         </div>

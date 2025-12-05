@@ -15,7 +15,7 @@ class VehicleServices {
     public function getAllVehicleWithRelation()
     {
         $vehicles = $this->vehicleRepo->allWithRelations(
-            ['currentTrip', 'attachments'],
+            ['currentTrip', 'complianceDocs.attachments','attachments'],
             ['complianceDocs']
         );
 
