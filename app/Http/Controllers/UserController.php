@@ -40,7 +40,7 @@ class UserController extends Controller
         $userData = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => ['required', 'string', 'unique:users,phone_number', 'regex:/^(09\d{9}|\+639\d{9})$/'],
+            'phone_number' => ['required', 'string', 'unique:users,phone_number'],
             'password' => 'required|confirmed',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',

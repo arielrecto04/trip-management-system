@@ -7,6 +7,8 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
 import Image from 'primevue/image';
+import Password from 'primevue/password';
+import InputMask from 'primevue/inputmask';
 
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -113,19 +115,19 @@ const submitEditForm = () => {
 
                         <div>
                             <InputLabel for="phone_number" value="Phone Number" />
-                            <InputText v-model="editForm.phone_number" class="w-full mt-1" />
+                            <InputMask v-model="editForm.phone_number" class="w-full mt-1" mask="+63999999999" placeholder="+63999999999" fluid />
                             <InputError :message="editForm.errors.phone_number" class="mt-1" />
                         </div>
 
                         <div>
                             <InputLabel for="password" value="Password" />
-                            <InputText v-model="editForm.password" type="password" class="w-full mt-1" />
+                            <Password v-model="editForm.password" fluid toggleMask class="w-full mt-1" />
                             <InputError :message="editForm.errors.password" class="mt-1" />
                         </div>
 
                         <div>
                             <InputLabel for="password_confirmation" value="Confirm Password" />
-                            <InputText v-model="editForm.password_confirmation" type="password" class="w-full mt-1" />
+                            <Password v-model="editForm.password_confirmation" fluid toggleMask class="w-full mt-1" />
                             <InputError :message="editForm.errors.password_confirmation" class="mt-1" />
                         </div>
                     </div>

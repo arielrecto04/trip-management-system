@@ -9,6 +9,8 @@ import Image from 'primevue/image';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
+import Password from 'primevue/password';
+import InputMask from 'primevue/inputmask';
 
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -100,19 +102,19 @@ const submitCreateForm = () => {
 
                             <div>
                                 <InputLabel for="phone_number" value="Phone Number" />
-                                <InputText v-model="createForm.phone_number" class="w-full mt-1" />
+                                <InputMask v-model="createForm.phone_number" class="w-full mt-1" mask="+63999999999" placeholder="+63999999999" fluid />
                                 <InputError :message="createForm.errors.phone_number" class="mt-1" />
                             </div>
 
                             <div>
                                 <InputLabel for="password" value="Password" />
-                                <InputText v-model="createForm.password" type="password" class="w-full mt-1" />
+                                <Password v-model="createForm.password" fluid toggleMask class="w-full mt-1" />
                                 <InputError :message="createForm.errors.password" class="mt-1" />
                             </div>
 
                             <div>
                                 <InputLabel for="password_confirmation" value="Confirm Password" />
-                                <InputText v-model="createForm.password_confirmation" type="password" class="w-full mt-1" />
+                                <Password v-model="createForm.password_confirmation" fluid toggleMask class="w-full mt-1" />
                                 <InputError :message="createForm.errors.password_confirmation" class="mt-1" />
                             </div>
                         </div>
