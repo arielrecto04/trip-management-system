@@ -8,7 +8,7 @@ class MaintenanceLog extends Model
 {
     protected $fillable = [
         'vehicle_id',
-        'maintenance_id',
+        'maintenance_date',
         'technician',
         'work_performed',
         'cost',

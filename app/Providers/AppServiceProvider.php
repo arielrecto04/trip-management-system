@@ -8,6 +8,8 @@ use App\Repositories\Interfaces\DriverRepositoryInterface;
 use App\Repositories\Interfaces\VehicleRepositoryInterface;
 use App\Repositories\RoleRepository;
 use App\Repositories\DriverRepository;
+use App\Repositories\Interfaces\MaintenanceRepositoryInterface;
+use App\Repositories\MaintenanceRepository;
 use App\Repositories\VehicleRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Vite;
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(DriverRepositoryInterface::class, DriverRepository::class);
         $this->app->bind(VehicleRepositoryInterface::class, VehicleRepository::class);
+        $this->app->bind(MaintenanceRepositoryInterface::class, MaintenanceRepository::class);
     }
 
     /**
