@@ -42,5 +42,18 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::whereHas('roles', fn($q) => $q->where('slug', $slug))->get();
     }
+    public function allWithRelations(array $relations = [], array $withCount = [])
+    {
+        return User::with($relations)
+            ->withCount($withCount)
+            ->get();
+    }
+
+    public function findWithRelations(int $id, array $relations = [], array $withCount = [])
+    {
+        return User::with($relations)
+            ->withCount($withCount)
+            ->findOrFail($id);
+    }
 
 }

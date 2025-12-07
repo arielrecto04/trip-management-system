@@ -22,7 +22,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $drivers = $this->driverServices->showAllDrivers();
+        $drivers = $this->driverServices->showAllDriversWithRelations();
 
         return Inertia::render('Driver/Index', [
             'drivers' => $drivers,

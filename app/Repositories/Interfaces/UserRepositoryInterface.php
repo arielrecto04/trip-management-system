@@ -12,4 +12,7 @@ interface UserRepositoryInterface
     public function delete(int $id);
 
     public function getUserByRoleSlug(string $slug);
+    
+    public function allWithRelations(array $relations);
+    public function findWithRelations(int $id, array $relations);
 }
