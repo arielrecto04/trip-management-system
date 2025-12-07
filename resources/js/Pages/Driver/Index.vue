@@ -8,6 +8,8 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import MultiSelect from 'primevue/multiselect';
+import Dialog from 'primevue/dialog';
+import Image from 'primevue/image';
 
 import { useGlobalToast } from '@/Utils/toast';
 
@@ -24,6 +26,19 @@ const vehicleOptions = ref(
 );
 
 const selectedVehicles = ref([]);
+
+const showDocsDialog = ref(false);
+const selectedDriver = ref(null);
+const selectedDocs = ref([]);
+
+const openDocsDialog = (driver) => {
+    selectedDriver.value = driver;    
+    selectedDocs.value = driver.compliance_docs
+    ?.flatMap(doc => doc.attachments?.flatMap(inner => inner || []) ?? [])
+    ?? [];
+
+    showDocsDialog.value = true;
+};
 
 const filteredDrivers = computed(() => {
     if (selectedVehicles.value.length === 0) return drivers.value;
@@ -152,6 +167,13 @@ const deleteDriver = (id) => {
                                     <Button icon="pi pi-user-edit" severity="info" rounded />
                                 </Link>
 
+                                <Button 
+                                    icon="pi pi-file"
+                                    severity="help"
+                                    rounded
+                                    @click="openDocsDialog(data)"
+                                />
+
                                 <Button
                                     icon="pi pi-trash"
                                     severity="danger"
@@ -163,6 +185,58 @@ const deleteDriver = (id) => {
                     </Column>
 
                 </DataTable>
+                <Dialog
+                    v-model:visible="showDocsDialog"
+                    :header="`Documents for ${selectedDriver?.user?.name ?? ''}`"
+                    :modal="true"
+                    :style="{ width: '60vw' }"
+                    class="dark:bg-zinc-900"
+                >
+                    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+                        <!-- No Docs Case -->
+                        <div 
+                            v-if="selectedDocs.length === 0"
+                            class="text-center text-gray-500 dark:text-gray-300 col-span-full"
+                        >
+                            No attached documents.
+                        </div>
+
+                        <!-- Document Cards -->
+                        <div
+                            v-for="doc in selectedDocs"
+                            :key="doc.id"
+                            class="rounded-xl shadow-md overflow-hidden bg-white dark:bg-zinc-800 
+                                border border-gray-200 dark:border-zinc-700 flex flex-col"
+                        >
+                            <!-- Header Badge -->
+                            <div class="px-4 py-2 text-blue-700 dark:text-blue-200 font-semibold text-sm uppercase">
+                                {{ doc.type ?? 'Document' }}
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div class="w-full h-56 bg-gray-100 dark:bg-zinc-700 flex items-center justify-center">
+                                <Image
+                                    preview
+                                    v-if="doc.url"
+                                    :src="`/storage/${doc.url}`"
+                                    alt="Document"
+                                    class="max-h-full max-w-full object-contain"
+                                />
+                                <span v-else class="text-gray-500 dark:text-gray-300 text-sm">No Image</span>
+                            </div>
+
+                            <!-- File Info -->
+                            <div class="p-4 flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-300 truncate">
+                                    {{ doc.name ?? 'Unknown File' }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </Dialog>
+
             </div>
         </div>
     </AuthenticatedLayout>
