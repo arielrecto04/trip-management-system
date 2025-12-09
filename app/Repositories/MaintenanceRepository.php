@@ -9,12 +9,22 @@ class MaintenanceRepository implements MaintenanceRepositoryInterface
 {
     public function all()
     {
-        return MaintenanceLog::with('vehicle')->get();
+        return MaintenanceLog::all();
+    }
+
+    public function allWithRelations(array $relations)
+    {
+        return MaintenanceLog::with($relations)->get();
     }
 
     public function find(int $id)
     {
-        return MaintenanceLog::with('vehicle')->findOrFail($id);
+        return MaintenanceLog::findOrFail($id);
+    }
+
+    public function findWithRelations(int $id, array $relations)
+    {
+        return MaintenanceLog::with($relations)->findOrFail($id);
     }
 
     public function create(array $data)

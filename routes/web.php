@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
@@ -64,6 +65,19 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('vehicles.destroy');
     Route::patch('/vehicles/{id}/toggle-active', [VehicleController::class, 'toggleActive'])
         ->name('vehicles.toggle');
+
+    Route::get('/maintenance', [MaintenanceController::class, 'index'])
+        ->name('maintenance');
+    Route::get('/maintenance/create', [MaintenanceController::class, 'create'])
+        ->name('maintenance.create');
+    Route::post('/maintenance', [MaintenanceController::class, 'store'])
+        ->name('maintenance.store');
+    Route::get('/maintenance/{id}/edit', [MaintenanceController::class, 'edit'])
+        ->name('maintenance.edit');
+    Route::delete('/maintenance/{id}', [MaintenanceController::class, 'destroy'])
+        ->name('maintenance.destroy');
+    Route::put('/maintenance/{id}', [MaintenanceController::class, 'update'])
+        ->name('maintenance.update');
 });
 
 Route::middleware('auth')->group(function () {
