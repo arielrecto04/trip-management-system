@@ -12,6 +12,13 @@ class VehicleServices {
     )
     {}
 
+    public function getAllVehicles()
+    {
+        $vehicle = $this->vehicleRepo->all();
+
+        return $vehicle;
+    }
+
     public function getAllVehicleWithRelation()
     {
         $vehicles = $this->vehicleRepo->allWithRelations(

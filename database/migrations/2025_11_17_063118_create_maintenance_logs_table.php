@@ -15,11 +15,13 @@ return new class extends Migration
         Schema::create('maintenance_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Vehicle::class);
-            $table->date('maintenance_date');
+            $table->date('start_maintenance_date');
+            $table->date('end_maintenance_date')->nullable();
             $table->string('technician')->nullable();
             $table->string('work_performed');
             $table->decimal('cost');
             $table->decimal('current_odometer');
+            $table->string('status');
             $table->timestamps();
         });
     }
