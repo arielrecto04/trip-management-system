@@ -91,8 +91,11 @@ function openContact() {
                     <a href="#fleet" class="text-sm hover:underline">Fleet</a>
                     <a href="#track" class="text-sm hover:underline">Track</a>
                     <a href="#contact" class="text-sm hover:underline">Contact</a>
-                    <button @click="openContact" class="ml-4 px-3 py-2 bg-sky-600 text-white rounded-md text-sm">Get a
-                        Quote</button>
+                    <Link :href="route('login')">
+                        <button class="ml-4 px-3 py-2 bg-sky-600 text-white rounded-md text-sm">
+                            Login
+                        </button>
+                    </Link>
                 </nav>
             </div>
         </header>
