@@ -70,6 +70,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Vehicles
                                 </NavLink>
+                                <NavLink
+                                    :href="route('maintenance')"
+                                    :active="route().current('maintenance')"
+                                >
+                                    Maintenance
+                                </NavLink>
                             </div>
                         </div>
 
@@ -194,6 +200,12 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('vehicles')"
                         >
                             Vehicles
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('maintenance')"
+                            :active="route().current('maintenance')"
+                        >
+                            Maintenance
                         </ResponsiveNavLink>
                     </div>
 
