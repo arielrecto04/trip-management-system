@@ -9,24 +9,15 @@ use App\Repositories\Interfaces\DriverRepositoryInterface;
 
 class DriverRepository implements DriverRepositoryInterface {
     
-    public function all()
-    {
-        return Driver::all();
-    }
-
-    public function find(int $id)
-    {
-        return Driver::findOrFail($id);
-    }
-
-    public function allWithRelations(array $relations = [], array $withCount = [])
+    public function all(array $relations = [], array $withCount = [])
     {
         return Driver::with($relations)
             ->withCount($withCount)
+            ->orderBy('created_at', 'desc')
             ->get();
     }
 
-    public function findWithRelations(int $id, array $relations = [], array $withCount = [])
+    public function find(int $id, array $relations = [], array $withCount = [])
     {
         return Driver::with($relations)
             ->withCount($withCount)

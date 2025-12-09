@@ -1,17 +1,14 @@
 <?php
 
-
 namespace App\Repositories\Interfaces;
+
+use App\Models\Vehicle;
 
 interface VehicleRepositoryInterface
 {
-    public function all();
-    public function find(int $id);
-
-    public function allWithRelations(array $relations, array $withCount);
-    public function findWithRelations(int $id, array $relations, array $withCount);
-
-    public function create(array $data);
-    public function update(int $id, array $data);
-    public function delete(int $id);
+    public function all(array $relations = [], array $withCount = []);
+    public function find(int $id, array $relations = [], array $withCount = []);
+    public function create(array $data): Vehicle;
+    public function update(int $id, array $data): Vehicle;
+    public function delete(int $id): bool;
 }

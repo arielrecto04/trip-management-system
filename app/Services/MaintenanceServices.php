@@ -45,7 +45,7 @@ class MaintenanceServices {
 
     public function getAllMaintenanceWithRelations()
     {
-        $maintenances = $this->maintenanceRepo->allWithRelations([
+        $maintenances = $this->maintenanceRepo->all([
             'attachments',
             'vehicle',
         ]);
@@ -53,9 +53,9 @@ class MaintenanceServices {
         return $maintenances;
     }
 
-    public function getMaintenanceWithRelations($id)
+    public function getMaintenance($id)
     {
-        $maintenance = $this->maintenanceRepo->findWithRelations($id, [
+        $maintenance = $this->maintenanceRepo->find($id, [
             'attachments',
             'vehicle',
         ]);
@@ -151,7 +151,7 @@ class MaintenanceServices {
             }
         }
 
-        return $this->getMaintenanceWithRelations($id);
+        return $this->getMaintenance($id);
     }
 
 

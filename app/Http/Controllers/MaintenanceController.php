@@ -18,7 +18,7 @@ class MaintenanceController extends Controller
     public function index()
     {
         $maintenanceLogs = $this->maintenanceServices->getAllMaintenanceWithRelations();
-        $vehicles = $this->vehicleServices->getAllVehicleWithRelation();
+        $vehicles = $this->vehicleServices->getAllVehicles();
 
         return Inertia::render('Maintenance/Index', [
             'maintenanceLogs' => $maintenanceLogs,
@@ -37,7 +37,7 @@ class MaintenanceController extends Controller
 
     public function edit($id)
     {
-        $maintenance = $this->maintenanceServices->getMaintenanceWithRelations($id);
+        $maintenance = $this->maintenanceServices->getMaintenance($id);
 
         return Inertia::render('Maintenance/Edit', [
             'maintenance' => $maintenance,

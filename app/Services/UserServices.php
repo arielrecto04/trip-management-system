@@ -81,7 +81,6 @@ class UserServices
     public function deleteUser($id) 
     {
         $user = $this->userRepo->delete($id);
-        // $this->deleteProfilePicture($user);
         return $user;
     }
 

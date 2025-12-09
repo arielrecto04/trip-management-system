@@ -4,11 +4,9 @@ namespace App\Repositories\Interfaces;
 
 interface MaintenanceRepositoryInterface
 {
-    public function all();
-    public function allWithRelations(array $relations);
-    public function findWithRelations(int $id, array $relations);
+    public function all(array $relations = [], array $withCount = []);
 
-    public function find(int $id);
+    public function find(int $id, array $relations = [], array $withCount = []);
 
     public function create(array $data);
 

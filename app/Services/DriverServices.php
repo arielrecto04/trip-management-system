@@ -13,9 +13,9 @@ class DriverServices {
     )
     {}
 
-    public function showAllDriversWithRelations()
+    public function showAllDrivers()
     {
-        $drivers = $this->driverRepo->allWithRelations([
+        $drivers = $this->driverRepo->all([
             'complianceDocs.attachments',
             'user',
             'licenseRestrictions'
@@ -24,9 +24,9 @@ class DriverServices {
         return $drivers;
     }
 
-    public function showDriverWithId(int $id)
+    public function showDriverById(int $id)
     {
-        $driver = $this->driverRepo->findWithRelations($id, [
+        $driver = $this->driverRepo->find($id, [
             'licenseRestrictions',
             'user',
             'complianceDocs.attachments'
@@ -49,13 +49,6 @@ class DriverServices {
             })
             ->values();
             
-        return $driver;
-    }
-
-    public function showDriverById(int $id)
-    {
-        $driver = $this->driverRepo->find($id);
-
         return $driver;
     }
 

@@ -15,7 +15,10 @@ class VehicleController extends Controller
 
     public function index()
     {
-        $vehicles = $this->vehicleServices->getAllVehicleWithRelation();
+        $vehicles = $this->vehicleServices->getAllVehicles(
+            ['currentTrip', 'complianceDocs.attachments','attachments', 'maintenances'],
+            ['complianceDocs']
+        );
 
         return Inertia::render('Vehicle/Index', [
             'vehicles' => $vehicles,
@@ -78,7 +81,11 @@ class VehicleController extends Controller
 
     public function edit($id)
     {
-        $vehicle = $this->vehicleServices->getVehicleById($id);
+        $vehicle = $this->vehicleServices->getVehicleById(
+            $id,
+            ['complianceDocs.attachments', 'attachments'],
+            ['complianceDocs']
+        );
 
         return Inertia::render('Vehicle/Edit', [
             'vehicle' => $vehicle

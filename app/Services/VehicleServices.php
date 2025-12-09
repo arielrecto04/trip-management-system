@@ -12,30 +12,17 @@ class VehicleServices {
     )
     {}
 
-    public function getAllVehicles()
+    public function getAllVehicles(array $relations = [], array $withCount = [])
     {
-        $vehicle = $this->vehicleRepo->all();
+        $vehicle = $this->vehicleRepo->all($relations, $withCount);
 
         return $vehicle;
     }
 
-    public function getAllVehicleWithRelation()
-    {
-        $vehicles = $this->vehicleRepo->allWithRelations(
-            ['currentTrip', 'complianceDocs.attachments','attachments', 'maintenances'],
-            ['complianceDocs']
-        );
 
-        return $vehicles;
-    }
-
-    public function getVehicleById(int $id)
+    public function getVehicleById(int $id, array $relations = [], array $withCount = [])
     {
-        return $this->vehicleRepo->findWithRelations(
-            $id,
-            ['complianceDocs.attachments', 'attachments'],
-            ['complianceDocs']
-        );
+        return $this->vehicleRepo->find($id, $relations, $withCount);
     }
 
     public function createVehicle(array $data)
@@ -116,7 +103,7 @@ class VehicleServices {
 
     public function updateVehicle(int $id, array $data)
     {
-        $vehicle = $this->vehicleRepo->findWithRelations(
+        $vehicle = $this->vehicleRepo->find(
             $id,
             ['complianceDocs.attachments', 'attachments'],
             []

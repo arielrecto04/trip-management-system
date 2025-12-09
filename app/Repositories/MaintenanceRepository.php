@@ -7,24 +7,19 @@ use App\Repositories\Interfaces\MaintenanceRepositoryInterface;
 
 class MaintenanceRepository implements MaintenanceRepositoryInterface
 {
-    public function all()
+    public function all(array $relations = [], array $withCount = [])
     {
-        return MaintenanceLog::all();
+        return MaintenanceLog::with($relations)
+            ->withCount($withCount)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
-    public function allWithRelations(array $relations)
+    public function find(int $id, array $relations = [], array $withCount = [])
     {
-        return MaintenanceLog::with($relations)->get();
-    }
-
-    public function find(int $id)
-    {
-        return MaintenanceLog::findOrFail($id);
-    }
-
-    public function findWithRelations(int $id, array $relations)
-    {
-        return MaintenanceLog::with($relations)->findOrFail($id);
+        return MaintenanceLog::with($relations)
+            ->withCount($withCount)
+            ->findOrFail($id);
     }
 
     public function create(array $data)
