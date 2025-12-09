@@ -25,6 +25,18 @@ const vehicles = ref(
 
 console.log(props.vehicles);
 
+const formatLocalDate = (d) => {
+    if (!d) return "";
+
+    const date = new Date(d);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+};
+
 const vehicleSuggestions = ref([]);
 const selectedVehicle = ref(null);
 
@@ -51,7 +63,6 @@ const form = useForm({
     cost: "",
     current_odometer: "",
     attachments: [],
-    status: '',
 });
 
 const previewFiles = ref([]);
@@ -73,15 +84,8 @@ const removeFiles = () => {
 };
 
 const submitForm = () => {
-    if (form.start_maintenance_date) {
-        const start = new Date(form.start_maintenance_date);
-        form.start_maintenance_date = start.toISOString().split("T")[0];
-    }
-
-    if (form.end_maintenance_date) {
-        const end = new Date(form.end_maintenance_date);
-        form.end_maintenance_date = end.toISOString().split("T")[0];
-    }
+    form.start_maintenance_date = formatLocalDate(form.start_maintenance_date);
+    form.end_maintenance_date = formatLocalDate(form.end_maintenance_date);
 
     form.post('/maintenance', {
         preserveScroll: true,

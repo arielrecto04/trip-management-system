@@ -149,6 +149,7 @@ const activeStatusClass = (state) => {
                         <template #body="{ data }">
                             <ToggleSwitch
                                 :modelValue="Boolean(data.is_active)"
+                                :disabled="data.has_in_progress_maintenance"
                                 @update:modelValue="(val) => toggleActive(data, val)"
                                 class="w-32"
                             />

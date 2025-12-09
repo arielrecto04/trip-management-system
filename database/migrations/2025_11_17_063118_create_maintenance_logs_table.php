@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('work_performed');
             $table->decimal('cost');
             $table->decimal('current_odometer');
-            $table->string('status');
             $table->timestamps();
         });
     }

@@ -21,6 +21,19 @@ const maintenance = props.maintenance;
 const previewFiles = ref([]);
 const attachments = ref(maintenance.attachments || []);
 
+const formatLocalDate = (d) => {
+    if (!d) return "";
+
+    const date = new Date(d);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+};
+
+
 // MAIN FORM
 const form = useForm({
     _method: 'PUT',
@@ -60,13 +73,8 @@ const removeExistingFile = (file) => {
 };
 
 const submitForm = () => {
-    if (form.start_maintenance_date) {
-        form.start_maintenance_date = new Date(form.start_maintenance_date).toISOString().split("T")[0];
-    }
-
-    if (form.end_maintenance_date) {
-        form.end_maintenance_date = new Date(form.end_maintenance_date).toISOString().split("T")[0];
-    }
+    form.start_maintenance_date = formatLocalDate(form.start_maintenance_date);
+    form.end_maintenance_date = formatLocalDate(form.end_maintenance_date);
 
     form.post(route('maintenance.update', maintenance.id), {
         preserveScroll: true,

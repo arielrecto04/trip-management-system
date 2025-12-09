@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +21,10 @@ class Vehicle extends Model
         'capacity_m3',
         'is_active',
         'license_plate',
+    ];
+
+    protected $appends = [
+        'has_in_progress_maintenance'
     ];
 
     protected static function booted()
@@ -41,6 +46,22 @@ class Vehicle extends Model
                 $doc->delete();
             }
         });
+    }
+
+    public function maintenances()
+    {
+        return $this->hasMany(MaintenanceLog::class);
+    }
+
+    public function getHasInProgressMaintenanceAttribute()
+    {
+        $today = now()->startOfDay();
+        return $this->maintenances
+                    ->contains(function($maintenance) use ($today) {
+                        $start = Carbon::parse($maintenance->start_maintenance_date)->startOfDay();
+                        $end   = Carbon::parse($maintenance->end_maintenance_date)->endOfDay();
+                        return $today->between($start, $end);
+                    });
     }
 
     public function currentTrip()

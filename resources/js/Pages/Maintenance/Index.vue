@@ -27,6 +27,25 @@ const vehicleOptions = ref(
     props.vehicles?.map(v => ({ id: v.id, plate: v.license_plate })) ?? []
 );
 
+const computeStatus = (log) => {
+    const today = new Date();
+    const start = new Date(log.start_maintenance_date);
+    const end = new Date(log.end_maintenance_date);
+
+    if (today < start) return "Pending";
+    if (today >= start && today < end) return "In Progress";
+    return "Completed";
+};
+
+const statusBadgeClass = (status) => {
+    const classes = {
+        'Pending': 'bg-yellow-400 text-black',
+        'In Progress': 'bg-blue-500 text-white',
+        'Completed': 'bg-green-500 text-white',
+    };
+    return classes[status] ?? 'bg-gray-300 text-black';
+};
+
 const filteredLogs = computed(() => {
     let list = logs.value;
 
@@ -197,6 +216,15 @@ const openAttachmentsDialog = (log) => {
                     </Column>
                     <Column header="Work Performed">
                         <template #body="{ data }">{{ data.work_performed }}</template>
+                    </Column>
+                    <Column header="Status">
+                        <template #body="{ data }">
+                            <span 
+                                :class="`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeClass(computeStatus(data))}`"
+                            >
+                                {{ computeStatus(data) }}
+                            </span>
+                        </template>
                     </Column>
                     <Column header="Actions" class="w-40">
                         <template #body="{ data }">
