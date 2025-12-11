@@ -100,4 +100,9 @@ class User extends Authenticatable
         return $this->morphOne(Attachment::class, 'attachable')
             ->where('type', 'profile_picture');
     }
+
+    public function warehouses()
+    {
+        return $this->hasMany(Warehouse::class, 'contact_person');
+    }
 }

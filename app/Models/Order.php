@@ -26,4 +26,9 @@ class Order extends Model
     {
         return $this->hasMany(TripStop::class);
     }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class, 'origin_warehouse_id');
+    }
 }
