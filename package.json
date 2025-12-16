@@ -25,6 +25,7 @@
         "@primeuix/themes": "^1.2.5",
         "install": "^0.13.0",
         "leaflet": "^1.9.4",
+        "leaflet-routing-machine": "^3.2.12",
         "npm": "^11.6.2",
         "primeicons": "^7.0.0",
         "primevue": "^4.4.1",
