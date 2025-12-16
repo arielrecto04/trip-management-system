@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.leaflet-routing-container,
+.leaflet-routing-container * {
+    color: #000 !important;
+}
+
+.leaflet-routing-alt,
+.leaflet-routing-alt * {
+    color: #000 !important;
+}
+
+.leaflet-routing-geocoders,
+.leaflet-routing-geocoders * {
+    color: #000 !important;
+}
