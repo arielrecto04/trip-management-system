@@ -125,9 +125,9 @@ class TripController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Trip $trip)
+    public function destroy(int $id)
     {
-        $trip->delete();
+        $this->tripService->deleteTrip($id);
 
         return redirect()->route('trips');
     }

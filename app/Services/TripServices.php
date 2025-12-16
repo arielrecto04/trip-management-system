@@ -76,4 +76,11 @@ class TripServices {
 
         return $this->tripRepo->update($id, $data);
     }
+
+    public function deleteTrip(int $id)
+    {
+        $trip = $this->tripRepo->delete($id);
+
+        return $trip;
+    }
 }
