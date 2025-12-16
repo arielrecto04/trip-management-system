@@ -11,4 +11,6 @@ interface VehicleRepositoryInterface
     public function create(array $data): Vehicle;
     public function update(int $id, array $data): Vehicle;
     public function delete(int $id): bool;
+
+    public function getActiveVehicles(array $relations = [], array $withCount = []);
 }

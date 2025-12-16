@@ -41,7 +41,7 @@ class TripServices {
     {
         return [
             'drivers' => $this->driverRepo->all(),
-            'vehicles' => $this->vehicleRepo->all(),
+            'vehicles' => $this->vehicleRepo->getActiveVehicles(),
             'warehouses' => $this->warehouseRepo->all(),
             'dispatchers' => $this->userRepo->getUserByRoleSlug('dispatcher'),
         ];

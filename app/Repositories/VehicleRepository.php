@@ -39,4 +39,14 @@ class VehicleRepository implements VehicleRepositoryInterface
         $vehicle = Vehicle::findOrFail($id);
         return $vehicle->delete();
     }
+
+    
+    public function getActiveVehicles(array $relations = [], array $withCount = [])
+    {
+        return Vehicle::with($relations)
+            ->withCount($withCount)
+            ->where('is_active', true)
+            ->orderBy('created_by', 'desc')
+            ->get();
+    }
 }
