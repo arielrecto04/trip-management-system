@@ -9,15 +9,19 @@ class Trip extends Model
     protected $fillable = [
         'driver_id',
         'vehicle_id',
+        'warehouse_id',
         'dispatcher_id',
         'status',
         'planned_start_time',
         'actual_start_time',
         'route',
         'route_distance_km',
-        'route_distance_minutes',
         'is_liquidation_required',
-        'is_pre_trip_checked'
+        'is_pre_trip_checked',
+        'customer_name',
+        'customer_address',
+        'latitude',
+        'longitude',
     ];
 
     public function stops()
