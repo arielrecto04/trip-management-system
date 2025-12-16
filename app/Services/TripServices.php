@@ -27,6 +27,16 @@ class TripServices {
         return $trips;
     }
 
+    public function getTrip(int $id)
+    {
+        $trip = $this->tripRepo->find(
+            $id,
+            ['driver', 'vehicle', 'dispatcher'],
+        );
+
+        return $trip;
+    }
+
     public function getCreateFormData()
     {
         return [
@@ -41,10 +51,29 @@ class TripServices {
     {
         $planned = Carbon::parse($data['planned_start_time']);
 
-        $data['status'] = $planned->isFuture() ? 'pending' : 'in progress';
+        $data['status'] = $planned->isFuture()
+            ? 'pending'
+            : 'in progress';
 
-        $data['planned_start_time'] = $planned->clone()->setTimezone('UTC');
+        $data['planned_start_time'] = $planned;
 
         return $this->tripRepo->create($data);
+    }
+
+    public function editTrip(int $id, array $data)
+    {
+        $trip = $this->tripRepo->find($id);
+
+        if (!empty($data['planned_start_time'])) {
+            $planned = Carbon::parse($data['planned_start_time']);
+
+            $data['planned_start_time'] = $planned;
+
+            if (!in_array($trip->status, ['completed', 'cancelled'])) {
+                $data['status'] = $planned->isFuture() ? 'pending' : 'in progress';
+            }
+        }
+
+        return $this->tripRepo->update($id, $data);
     }
 }

@@ -48,7 +48,7 @@ class TripController extends Controller
             'vehicle_id' => 'required|exists:vehicles,id',
             'dispatcher_id' => 'required|exists:users,id',
             'warehouse_id' => 'required',
-            'status' => 'string',
+            'status' => 'nullable|string',
             'route' => 'required|string',
             'planned_start_time' => 'required|date',
             'actual_start_time' => 'nullable|date',
@@ -81,11 +81,14 @@ class TripController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Trip $trip)
+    public function edit(int $id)
     {
-        return Inertia::render('Trips/Edit', [
-            'trip' => $trip->load(['driver', 'vehicle', 'dispatcher']),
+        $trip = $this->tripService->getTrip($id);
+
+        return Inertia::render('Trip/Edit', [
+            'trip' => $trip,
             'drivers' => Driver::all(),
+            'warehouses' => Warehouse::all(),
             'vehicles' => Vehicle::all(),
             'dispatchers' => User::where('role', 'Dispatcher')->get()
         ]);
@@ -94,25 +97,27 @@ class TripController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Trip $trip)
+    public function update(Request $request, int $id)
     {
-        $validated = $request->validate([
+        $tripData = $request->validate([
             'driver_id' => 'required|exists:drivers,id',
             'vehicle_id' => 'required|exists:vehicles,id',
             'dispatcher_id' => 'required|exists:users,id',
-            'status' => 'required|string',
+            'warehouse_id' => 'required',
+            'status' => 'string',
             'route' => 'required|string',
             'planned_start_time' => 'required|date',
             'actual_start_time' => 'nullable|date',
             'route_distance_km' => 'nullable|numeric|min:0',
-            'route_distance_minutes' => 'nullable|numeric|min:0',
             'is_liquidation_required' => 'boolean',
             'is_pre_trip_checked' => 'boolean',
-            'customer_name' => 'required',
-            'customer_address' => 'required',
+            'customer_name' => 'required|string|max:255',
+            'customer_address' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
-        $trip->update($validated);
+        $this->tripService->editTrip($id, $tripData);
 
         return redirect()->route('trips');
     }
