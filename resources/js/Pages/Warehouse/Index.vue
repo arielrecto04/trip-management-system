@@ -1,31 +1,25 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, usePage, router } from '@inertiajs/vue3';
-import { ref, computed, watch } from 'vue';
-import axios from 'axios';
+import { ref, watch } from 'vue';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
-import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
-import Tag from 'primevue/tag';
 
 import { useGlobalToast } from '@/Utils/toast';
 const { success, error } = useGlobalToast();
 
 const { props } = usePage();
 
-// Reactive warehouses from server
 const warehouses = ref(props.warehouses);
 
 console.log(warehouses);
 
-// Search
 const search = ref("");
 
-// Debounce setup
 let debounceTimer = null;
 watch(search, (val) => {
     clearTimeout(debounceTimer);
@@ -39,7 +33,6 @@ const applySearch = () => {
 
     warehouses.value = props.warehouses.filter(w =>
         w.name.toLowerCase().includes(q) ||
-        w.contact_person_name?.toLowerCase().includes(q) ||
         w.city_name?.toLowerCase().includes(q) ||
         w.address?.toLowerCase().includes(q)
     );
@@ -61,7 +54,6 @@ const formatAddress = (w) => {
 
     return address.join(', ');
 }
-// Delete warehouse with clean UI pattern
 const loadingDelete = ref(false);
 const deleteWarehouse = async (id) => {
     if (!confirm("Are you absolutely sure? This action cannot be undone.")) return;
@@ -91,7 +83,6 @@ const deleteWarehouse = async (id) => {
         <div class="p-6">
             <div class="mx-auto max-w-7xl">
 
-                <!-- Toolbar -->
                 <Toolbar class="mb-5">
                     <template #start>
                         <div class="flex items-center gap-3">
@@ -114,7 +105,6 @@ const deleteWarehouse = async (id) => {
                     </template>
                 </Toolbar>
 
-                <!-- Data Table -->
                 <DataTable
                     :value="warehouses"
                     dataKey="id"
@@ -126,12 +116,6 @@ const deleteWarehouse = async (id) => {
                     <Column field="id" header="Code" sortable />
 
                     <Column field="name" header="Warehouse" sortable />
-
-                    <Column header="Contact Person" sortable>
-                        <template #body="{ data }">
-                            {{ data.contact_person_name ?? 'N/A' }}
-                        </template>
-                    </Column>
 
                     <Column field="city_name" header="City" sortable />
 

@@ -229,15 +229,15 @@ const openAttachmentsDialog = (log) => {
                     <Column header="Actions" class="w-40">
                         <template #body="{ data }">
                             <div class="flex items-center gap-2">
+                                <Link :href="route('maintenance.edit', data.id)">
+                                    <Button icon="pi pi-pencil" severity="warning" rounded />
+                                </Link>
                                 <Button 
                                     icon="pi pi-eye" 
                                     severity="help" 
                                     rounded 
                                     @click="openAttachmentsDialog(data)" 
                                 />
-                                <Link :href="route('maintenance.edit', data.id)">
-                                    <Button icon="pi pi-pencil" severity="warning" rounded />
-                                </Link>
                                 <Button 
                                     icon="pi pi-trash"
                                     severity="danger"

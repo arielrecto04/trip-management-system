@@ -3,10 +3,12 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\MappingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
-use App\Models\Vehicle;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -78,6 +80,32 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
         ->name('maintenance.destroy');
     Route::put('/maintenance/{id}', [MaintenanceController::class, 'update'])
         ->name('maintenance.update');
+
+    Route::get('/trips', [TripController::class, 'index'])
+        ->name('trips');
+    Route::get('/trips/create', [TripController::class, 'create'])
+        ->name('trips.create');
+    Route::post('/trips', [TripController::class, 'store'])
+        ->name('trips.store');
+    Route::get('/trips/{id}/edit', [TripController::class, 'edit'])
+        ->name('trips.edit');
+    Route::delete('/trips/{id}', [TripController::class, 'destroy'])
+        ->name('trips.destroy');
+    Route::put('/trips/{id}', [TripController::class, 'update'])
+        ->name('trips.update');
+
+    Route::get('/warehouses', [WarehouseController::class, 'index'])
+        ->name('warehouses');
+    Route::get('/warehouses/create', [WarehouseController::class, 'create'])
+        ->name('warehouses.create');
+    Route::post('/warehouses', [WarehouseController::class, 'store'])
+        ->name('warehouses.store');
+    Route::get('/warehouses/{id}/edit', [WarehouseController::class, 'edit'])
+        ->name('warehouses.edit');
+    Route::delete('/warehouses/{id}', [WarehouseController::class, 'destroy'])
+        ->name('warehouses.destroy');
+    Route::put('/warehouses/{id}', [WarehouseController::class, 'update'])
+        ->name('warehouses.update');
 });
 
 Route::middleware('auth')->group(function () {
