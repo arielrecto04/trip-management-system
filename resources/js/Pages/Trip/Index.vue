@@ -27,7 +27,6 @@ const vehicles = ref(props.vehicles ?? []);
 const dispatcher = ref(props.dispatcher ?? []);
 const warehouses = ref(props.warehouse ?? []);
 
-// Filters
 const selectedVehicles = ref([]);
 const selectedDrivers = ref([]);
 const selectedTrip = ref(null);
@@ -40,9 +39,6 @@ const openMap = ref(false);
 const openMapsDialog = (trip) => {
 
     selectedTrip.value = trip;
-
-    console.log(selectedTrip.value);
-
     openMap.value = true;
 }
 
@@ -67,20 +63,19 @@ const driverOptions = ref(
     drivers.value.map(d => ({ id: d.id, name: d.user.name }))
 );
 
-// Helper function to determine Tag severity based on status
 const getStatusSeverity = (status) => {
     switch (status) {
         case 'pending':
         case 'scheduled':
-            return 'info'; // Blue/Info for scheduled or pending
-        case 'in_progress':
+            return 'info'; 
+        case 'in progress':
         case 'en_route':
-            return 'warning'; // Yellow/Warning for active trips
+            return 'warning';
         case 'completed':
-            return 'success'; // Green for completion
+            return 'success'; 
         case 'cancelled':
         case 'failed':
-            return 'danger'; // Red for failed/cancelled
+            return 'danger';
         default:
             return 'secondary';
     }
@@ -251,7 +246,7 @@ const deleteTrip = (id) => {
                     <Column header="Pre-Trip">
                         <template #body="{ data }">
                             <Tag 
-                                :value="data.is_pre_trip_checked ? 'CHECKED' : 'PENDING'" 
+                                :value="data.is_pre_trip_checked ? 'CHECKED' : 'NONE'" 
                                 :severity="data.is_pre_trip_checked ? 'success' : 'info'" 
                             />
                         </template>

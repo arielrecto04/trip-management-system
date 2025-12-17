@@ -57,21 +57,32 @@ class TripServices {
 
         $data['planned_start_time'] = $planned;
 
-        return $this->tripRepo->create($data);
+        $trip = $this->tripRepo->create($data);
+
+        if($data['status'] === 'in progress' && isset($data['vehicle_id'])) {
+            $vehicle = $this->vehicleRepo->find($data['vehicle_id']);
+            if($vehicle) {
+                $vehicle->update(['current_trip_id' => $trip->id]);
+            };
+        }
+
+        return $trip;
     }
 
     public function editTrip(int $id, array $data)
-    {
+    {        
         $trip = $this->tripRepo->find($id);
 
-        if (!empty($data['planned_start_time'])) {
-            $planned = Carbon::parse($data['planned_start_time']);
+        if(!empty($data['planned_start_time'])) {
+            $data['planned_start_time'] = Carbon::parse($data['planned_start_time']);
 
-            $data['planned_start_time'] = $planned;
-
-            if (!in_array($trip->status, ['completed', 'cancelled'])) {
-                $data['status'] = $planned->isFuture() ? 'pending' : 'in progress';
+            if($data['planned_start_time']->isFuture()) {
+                $data['status'] = 'pending';
+                $trip->vehicle->update(['current_trip_id' => null]);
             }
+        } else {
+            $data['status'] = 'in progress';
+            $trip->vehicle?->update(['current_trip_id' => $id]);
         }
 
         return $this->tripRepo->update($id, $data);
@@ -80,6 +91,10 @@ class TripServices {
     public function deleteTrip(int $id)
     {
         $trip = $this->tripRepo->delete($id);
+
+        if($trip && $trip->vehicle) {
+            $trip->vehicle->update(['current_trip_id' => null]);
+        }
 
         return $trip;
     }

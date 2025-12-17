@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
@@ -23,6 +24,26 @@ class Trip extends Model
         'latitude',
         'longitude',
     ];
+
+    protected $appends = ['computed_status'];
+
+    public function getComputedStatusAttribute()
+    {
+        $now = now();
+        $planned = $this->planned_start_time ? Carbon::parse($this->planned_start_time) : null;
+
+        if(!$planned) return $this->status;
+
+        if($now->lt($planned)) {
+            return 'pending';
+        }
+
+        if($now->gte($planned) && !in_array($this->status, ['completed', 'cancelled'])) {
+            return 'in progress';
+        }
+
+        return $this->status;
+    }
 
     public function stops()
     {
