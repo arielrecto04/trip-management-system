@@ -22,7 +22,7 @@ class TripServices {
 
     public function getAllTrips()
     {
-        $trips = $this->tripRepo->all(['driver', 'vehicle', 'dispatcher']);
+        $trips = $this->tripRepo->all(['driver', 'vehicle', 'dispatcher', 'warehouse']);
 
         return $trips;
     }
@@ -31,7 +31,7 @@ class TripServices {
     {
         $trip = $this->tripRepo->find(
             $id,
-            ['driver', 'vehicle', 'dispatcher'],
+            ['driver', 'vehicle', 'dispatcher', 'warehouse'],
         );
 
         return $trip;

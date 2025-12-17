@@ -48,5 +48,10 @@ class Trip extends Model
     {
         return $this->hasOne(Liquidation::class);
     }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
     
 }
