@@ -17,6 +17,8 @@ class MaintenanceLog extends Model
         'current_odometer',
     ];
 
+    protected $appends = ['status'];
+
     public function getStatusAttribute()
     {
         $today = Carbon::today();

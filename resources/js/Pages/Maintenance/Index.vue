@@ -27,16 +27,6 @@ const vehicleOptions = ref(
     props.vehicles?.map(v => ({ id: v.id, plate: v.license_plate })) ?? []
 );
 
-const computeStatus = (log) => {
-    const today = new Date();
-    const start = new Date(log.start_maintenance_date);
-    const end = new Date(log.end_maintenance_date);
-
-    if (today < start) return "Pending";
-    if (today >= start && today < end) return "In Progress";
-    return "Completed";
-};
-
 const statusBadgeClass = (status) => {
     const classes = {
         'Pending': 'bg-yellow-400 text-black',
@@ -220,9 +210,9 @@ const openAttachmentsDialog = (log) => {
                     <Column header="Status">
                         <template #body="{ data }">
                             <span 
-                                :class="`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeClass(computeStatus(data))}`"
+                                :class="`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeClass(data.status)}`"
                             >
-                                {{ computeStatus(data) }}
+                                {{ data.status }}
                             </span>
                         </template>
                     </Column>

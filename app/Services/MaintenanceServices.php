@@ -78,7 +78,6 @@ class MaintenanceServices {
             'work_performed' => $data['work_performed'],
             'cost' => $data['cost'],
             'current_odometer' => $data['current_odometer'],
-            'status' => $status,
         ];
 
         $maintenance = $this->maintenanceRepo->create($maintenanceData);
