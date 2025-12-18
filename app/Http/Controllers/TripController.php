@@ -26,7 +26,8 @@ class TripController extends Controller
         $trips = $this->tripService->getAllTrips();
 
         return Inertia::render('Trip/Index', [
-            'trips' => $trips
+            'trips' => $trips,
+            ...$this->tripService->getTripRelatedData(),
         ]);
     }
 
@@ -35,7 +36,7 @@ class TripController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Trip/Create', $this->tripService->getCreateFormData());
+        return Inertia::render('Trip/Create', $this->tripService->getTripRelatedData());
     }
 
     /**

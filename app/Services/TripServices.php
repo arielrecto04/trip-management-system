@@ -37,13 +37,13 @@ class TripServices {
         return $trip;
     }
 
-    public function getCreateFormData()
+    public function getTripRelatedData()
     {
         return [
-            'drivers' => $this->driverRepo->all(),
-            'vehicles' => $this->vehicleRepo->getActiveVehicles(),
             'warehouses' => $this->warehouseRepo->all(),
-            'dispatchers' => $this->userRepo->getUserByRoleSlug('dispatcher'),
+            'drivers'    => $this->driverRepo->all(),
+            'vehicles'   => $this->vehicleRepo->getActiveVehicles(),
+            'dispatchers'=> $this->userRepo->getUserByRoleSlug('dispatcher'),
         ];
     }
 
