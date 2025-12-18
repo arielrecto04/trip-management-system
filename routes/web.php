@@ -23,6 +23,9 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
+    Route::get('/test', [DashboardController::class, 'test'])
+        ->name('test');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -31,7 +34,7 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
     Route::get('/users/create', [UserController::class, 'create'])
         ->name('users.create');
     Route::post('/users', [UserController::class, 'store'])
-        ->name('users.store'); // Add name for consistency
+        ->name('users.store'); 
     
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])
         ->name('users.edit');
@@ -107,6 +110,33 @@ Route::middleware(['auth', 'role:logistics-manager'])->group(function() {
     Route::put('/warehouses/{id}', [WarehouseController::class, 'update'])
         ->name('warehouses.update');
 });
+
+Route::middleware(['auth', 'role:fleet-manager'])->group(function () {
+    Route::get('/fleet/dashboard', [DashboardController::class, 'fleet'])
+        ->name('fleet.dashboard');
+});
+
+Route::middleware(['auth', 'role:driver'])->group(function () {
+    Route::get('/driver/dashboard', [DashboardController::class, 'driver'])
+        ->name('driver.dashboard');
+});
+
+Route::middleware(['auth', 'role:dispatcher'])->group(function () {
+    Route::get('/dispatcher/dashboard', [DashboardController::class, 'dispatcher'])
+        ->name('dispatcher.dashboard');
+});
+
+Route::middleware(['auth', 'role:finance-admin-clerk'])->group(function () {
+    Route::get('/finance/dashboard', [DashboardController::class, 'finance'])
+        ->name('finance.dashboard');
+});
+
+Route::middleware(['auth', 'role:sales-rep'])->group(function () {
+    Route::get('/sales/dashboard', [DashboardController::class, 'sales'])
+        ->name('sales.dashboard');
+});
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

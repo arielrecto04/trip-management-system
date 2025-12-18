@@ -80,6 +80,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function hasRole(string $slug)
+    {
+        return $this->roles()->where('slug', $slug)->exists();
+    }
+
     public function has_driver_role()
     {
         return $this->roles->contains('slug', 'driver');
